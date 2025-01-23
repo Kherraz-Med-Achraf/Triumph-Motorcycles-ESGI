@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    // Sortie du code compilé
+    "outDir": "dist",
+
+    // Types de librairies incluses
+    "lib": ["ES2017", "DOM"],
+
+    // Pour Node + CommonJS (ou "ESNext" si tu préfères l'ESM)
+    "module": "CommonJS",
+    "moduleResolution": "node",
+
+    // Version cible
+    "target": "ES2017",
+
+    // Permet d'importer des modules CommonJS/ES en toute simplicité
+    "esModuleInterop": true,
+
+    // Options de vérification stricte
+    "strict": true,
+    "strictPropertyInitialization": false,
+
+    // Évite des conflits de typage pour certaines libs
+    "skipLibCheck": true,
+
+    // Répertoire racine du code TypeScript
+    "rootDir": "src",
+
+    // Les options CRITIQUES pour Nest :
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    // Souvent nécessaire avec TS 5.x + Nest (pour éviter le "nouveau" mode decorators)
+    "useDefineForClassFields": false
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

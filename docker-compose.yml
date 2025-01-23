@@ -1,47 +1,46 @@
-version: "3.8"
 services:
   ############################################# FRONTEND REACT ######################################################
   frontend:
     container_name: frontend-dev
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.react
     ports:
-      - "5173:5173"       
+      - "5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     environment:
       # force le polling
       - CHOKIDAR_USEPOLLING=true
-
+    command: ["npm", "run", "dev"]
 
   ################################################### BACKEND NEST ####################################################
   nest:
     container_name: nest-dev
     build:
-      context: ./backend-nest
-      dockerfile: Dockerfile.dev
+      context: ./backend
+      dockerfile: Dockerfile.nest
     ports:
       - "3000:3000"
     volumes:
-      - ./backend-nest:/app
+      - ./backend:/app
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-      - CHOKIDAR_INTERVAL="1000"
+    command: ["npm", "run", "start:nest"]
 
- 
   #################################################### BACKEND EXPRESS ############################################
   express:
     container_name: express-dev
     build:
-      context: ./backend-express
-      dockerfile: Dockerfile.dev
+      context: ./backend
+      dockerfile: Dockerfile.express
     ports:
       - "5000:5000"
     volumes:
-      - ./backend-express:/app
+      - ./backend:/app
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+    command: ["npm", "run", "start:express"]
