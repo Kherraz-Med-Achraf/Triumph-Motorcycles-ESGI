@@ -28,6 +28,17 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+      # Variables pour DB
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydb
+      - MONGO_HOST=mongo
+      - MONGO_USER=admin
+      - MONGO_PASSWORD=securepassword
+    depends_on:
+      - postgres
+      - mongo
     command: ["npm", "run", "start:nest"]
 
   #################################################### BACKEND EXPRESS ############################################
@@ -43,4 +54,44 @@ services:
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
+      # Variables pour DB
+      - POSTGRES_HOST=postgres
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydb
+      - MONGO_HOST=mongo
+      - MONGO_USER=admin
+      - MONGO_PASSWORD=securepassword
+    depends_on:
+      - postgres
+      - mongo
     command: ["npm", "run", "start:express"]
+
+    ################################################ POSTGRES ##########################################################
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-dev
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  ########################################################## MONGO #####################################################
+  mongo:
+    image: mongo:6
+    container_name: mongo-dev
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: securepassword
+
+volumes:
+  postgres_data:
+  mongo_data:
