@@ -1,4 +1,5 @@
-// frontend/src/components/RegisterUserForm.tsx
+import '../styles/components/RegisterUserForm.scss';
+
 import React, { useState } from 'react';
 
 export function RegisterUserForm() {
@@ -24,7 +25,7 @@ export function RegisterUserForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='RegisterUserForm'>
       <h2>Register User</h2>
       <div>
         <label>Email:</label>
