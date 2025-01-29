@@ -1,11 +1,32 @@
-import express, { Request, Response } from 'express';
+import express from "express";
+import cors from "cors";
+import { AppDataSource } from "../../infrastructure/db/typeorm.config";
+import bodyParser from "body-parser";
 
-const app = express();
+async function startExpress() {
+  try {
+    await AppDataSource.initialize();
+    console.log("Database connected");
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('<h1 style="color: blue; font-family: Arial, sans-serif;">Hello from Express Youri le BG! 😎</h1>');});
+    const app = express();
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Express is running on http://localhost:${PORT}`);
-});
+    app.use(
+      cors({
+        origin: "http://localhost:5173",
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        credentials: true,
+      })
+    );
+
+    app.use(bodyParser.json());
+
+
+    app.listen(5000, () => {
+      console.log("Express listening on http://localhost:5000");
+    });
+  } catch (error) {
+    console.error("Failed to start the server:", error);
+  }
+}
+
+startExpress();
