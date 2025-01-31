@@ -1,5 +1,5 @@
 import { Provider } from "@nestjs/common";
-import { RegisterUserUseCase } from "../../../../application/use-cases/user/RegisterUserUseCase";
+import { RegisterUserUseCase } from "../../../../application/use-cases/user/CreateUserUseCase";
 import { UserTypeORMRepository } from "../../../../infrastructure/typeorm/repositories/UserTypeORMRepository";
 import { AppDataSource } from "../../../../infrastructure/db/typeorm.config";
 import { UserTypeORMEntity } from "../../../../infrastructure/typeorm/entities/UserTypeORMEntity";
