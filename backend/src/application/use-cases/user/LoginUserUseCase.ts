@@ -2,11 +2,12 @@ import { UserRepository } from "../../../domain/repositories/UserRepository";
 import * as bcrypt from "bcrypt";
 import { LoginUserDTO, LoginUserSchema } from "./LoginUserDTO";
 import { ZodError } from "zod";
+import { UserEntity } from "../../../domain/entities/UserEntity";
 
 export class LoginUserUseCase {
   constructor(private userRepo: UserRepository) {}
 
-  async execute(input: LoginUserDTO): Promise<boolean> {
+  async execute(input: LoginUserDTO): Promise<UserEntity> {
     try {
       // Validation avec Zod
       const dto = LoginUserSchema.parse(input);
@@ -23,7 +24,7 @@ export class LoginUserUseCase {
         throw new Error("Mot de passe incorrect");
       }
 
-      return true;
+      return user;
     } catch (error) {
       if (error instanceof ZodError) {
         throw new Error(JSON.stringify(error.format())); 
