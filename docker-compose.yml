@@ -13,6 +13,8 @@ services:
     environment:
       # force le polling
       - CHOKIDAR_USEPOLLING=true
+      - VITE_NEST_API_URL=http://localhost:3000
+      - VITE_EXPRESS_API_URL=http://localhost:5000
     command: ["npm", "run", "dev"]
 
   ################################################### BACKEND NEST ####################################################

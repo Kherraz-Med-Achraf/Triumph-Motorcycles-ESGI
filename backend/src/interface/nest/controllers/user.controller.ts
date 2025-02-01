@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Req, BadRequestException } from "@nestjs/common"; 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Req,
+  BadRequestException,
+} from "@nestjs/common";
 import { CreateUserUseCase } from "../../../application/use-cases/user/CreateUserUseCase";
 import { CreateUserDTO } from "../../../application/use-cases/user/CreateUserDTO";
 import { LoginUserUseCase } from "../../../application/use-cases/user/LoginUserUseCase";
 import { LoginUserDTO } from "../../../application/use-cases/user/LoginUserDTO";
 import { AuthService } from "../../../infrastructure/auth/AuthService";
+import { EmailAlreadyExistsException } from "../../../domain/exceptions/EmailAlreadyExistsException";
 
 import { ZodError } from "zod";
 
@@ -21,9 +29,13 @@ export class UserController {
     } catch (error) {
       if (error instanceof ZodError) {
         throw new BadRequestException({
-          message: "Validation failed",
+          message: "Insciption échouée",
           errors: error.format(),
         });
+      }
+
+      if (error instanceof EmailAlreadyExistsException) {
+        throw new BadRequestException(error.message);
       }
 
       throw error;
@@ -50,6 +62,6 @@ export class UserController {
 
   @Get("me")
   async getProfile(@Req() req: Request) {
-    return { message: "Profil utilisateur", user: req };
+    return { message: "Profil utilisateur",  user: (req as any).user };
   }
 }
