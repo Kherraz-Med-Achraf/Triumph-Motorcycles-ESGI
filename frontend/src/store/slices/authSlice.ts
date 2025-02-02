@@ -24,7 +24,7 @@ export const fetchUser = createAsyncThunk(
   "auth/fetchUser",
   async (token: string, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${getApiUrl()}/auth/me`, {
+      const response = await fetch(`${getApiUrl()}/users/me`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

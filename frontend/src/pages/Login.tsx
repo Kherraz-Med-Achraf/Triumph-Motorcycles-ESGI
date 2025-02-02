@@ -23,13 +23,9 @@ export function Login() {
       alert("Erreur : " + err.error);
     } else {
       const data = await resp.json();
-      // Stocker le token dans Redux et le localStorage
       dispatch(setToken(data.token));
-
-      // Lancer l'async thunk pour récupérer le profil utilisateur
       dispatch(fetchUser(data.token));
-
-      alert("Connexion réussie : " + data.message);
+      alert(data.message);
       navigate("/");
     }
   };
@@ -45,6 +41,7 @@ export function Login() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
           />
         </div>
         <div className="login__group">
@@ -54,6 +51,7 @@ export function Login() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            autoComplete="current-password"
           />
         </div>
         <button type="submit" className="login__button">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/pages/signup.scss"; 
+import { getApiUrl } from "../config/apiUrls";
+import "../styles/pages/signup.scss";
 
 export function Signup() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const resp = await fetch("http://localhost:3000/users/register", {
+    const resp = await fetch(`${getApiUrl()}/users/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password, role }),
@@ -56,7 +57,9 @@ export function Signup() {
             <option value="CLIENT">CLIENT</option>
           </select>
         </div>
-        <button type="submit" className="signup__button">S'inscrire</button>
+        <button type="submit" className="signup__button">
+          S'inscrire
+        </button>
       </form>
       <button onClick={() => navigate("/")} className="signup__back">
         Retour à l'accueil
