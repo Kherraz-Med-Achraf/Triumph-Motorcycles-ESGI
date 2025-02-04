@@ -1,15 +1,17 @@
 // src/interface/express/main-express.ts
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-
 import { AppDataSource } from "../../infrastructure/db/typeorm.config";
 import { UserTypeORMEntity } from "../../infrastructure/typeorm/entities/UserTypeORMEntity";
 import { UserTypeORMRepository } from "../../infrastructure/typeorm/repositories/UserTypeORMRepository";
+
+import { CompanyTypeORMEntity } from "../../infrastructure/typeorm/entities/CompanyTypeORMEntity";
+import { CompanyTypeORMRepository } from "../../infrastructure/typeorm/repositories/CompanyTypeORMRepository";
+
 import { CreateUserUseCase } from "../../application/use-cases/user/CreateUserUseCase";
 import { LoginUserUseCase } from "../../application/use-cases/user/LoginUserUseCase";
+import { CreateCompanyUseCase } from "../../application/use-cases/company/CreateCompanyUseCase";
+import { GetAllUsersUseCase } from "../../application/use-cases/user/GetAllUsersUseCase";
 
-import { createUserRouter } from "./routes/user.router";
+import { buildApp } from "./buildApp";
 
 async function startExpress() {
   try {
@@ -17,36 +19,33 @@ async function startExpress() {
     await AppDataSource.initialize();
     console.log("✅ Base de données connectée !");
 
-    // On instancie le repo + use cases
-    const userOrmRepo = new UserTypeORMRepository(
+    // Instancier les repositories
+    const userRepo = new UserTypeORMRepository(
       AppDataSource.getRepository(UserTypeORMEntity)
     );
-    const createUserUseCase = new CreateUserUseCase(userOrmRepo);
-    const loginUserUseCase = new LoginUserUseCase(userOrmRepo);
-
-    // Création de l'app Express
-    const app = express();
-
-    // Middlewares
-    app.use(bodyParser.json());
-    app.use(
-      cors({
-        origin: "http://localhost:5173", // ton front
-        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-        credentials: true,
-      })
+    const companyRepo = new CompanyTypeORMRepository(
+      AppDataSource.getRepository(CompanyTypeORMEntity)
     );
+    
 
-    // On monte le router "users"
-    const userRouter = createUserRouter(createUserUseCase, loginUserUseCase);
-    app.use("/users", userRouter);
+    // Instancier les use cases
+    const createUserUseCase = new CreateUserUseCase(userRepo);
+    const loginUserUseCase = new LoginUserUseCase(userRepo);
+    const createCompanyUseCase = new CreateCompanyUseCase(companyRepo, userRepo);
+    const getAllUserUseCase = new GetAllUsersUseCase(userRepo);
+    // Construire l'app Express
+    const app = buildApp(
+      createUserUseCase,
+      loginUserUseCase,
+      createCompanyUseCase,
+      getAllUserUseCase
+    );
 
     // Lancement
     app.listen(5000, () => {
-      console.log(
-        `✅ Express est en cours d'exécution sur http://localhost:5000`
-      );
+      console.log(`✅ Express est en cours d'exécution sur http://localhost:5000`);
     });
+
   } catch (error) {
     console.error("❌ Erreur lors de l'initialisation de TypeORM :", error);
     process.exit(1);

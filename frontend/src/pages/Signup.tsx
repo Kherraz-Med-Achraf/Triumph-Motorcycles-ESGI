@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApiUrl } from "../config/apiUrls";
+import { toast } from "react-toastify"; // ✅ Import react-toastify
+import "react-toastify/dist/ReactToastify.css"; // ✅ Import des styles (si pas encore fait)
 import "../styles/pages/signup.scss";
 
 export function Signup() {
@@ -11,18 +13,25 @@ export function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const resp = await fetch(`${getApiUrl()}/users/register`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, role }),
-    });
-    if (!resp.ok) {
-      const err = await resp.json();
-      alert("Erreur : " + err.error);
-    } else {
+
+    try {
+      const resp = await fetch(`${getApiUrl()}/users/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role }),
+      });
+
       const data = await resp.json();
-      alert("Succès : " + data.message);
+
+      if (!resp.ok) {
+        toast.error(data.error || "Erreur inconnue lors de l'inscription.");
+        return;
+      }
+
+      toast.success("Compte créé avec succès !");
       navigate("/");
+    } catch (error) {
+      toast.error("Erreur de connexion au serveur.");
     }
   };
 

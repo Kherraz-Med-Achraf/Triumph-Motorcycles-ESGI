@@ -12,16 +12,26 @@ import DashboardConcession from "./components/dashboard/DashboardConcession";
 import DashboardClient from "./components/dashboard/DashboardClient";
 import DashboardDriver from "./components/dashboard/DashboardDriver";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
     <>
       <SwitchBackend />
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar
+        closeOnClick
+        pauseOnHover
+        draggable
+      />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-        
+
         <Route
           path="/dashboard"
           element={

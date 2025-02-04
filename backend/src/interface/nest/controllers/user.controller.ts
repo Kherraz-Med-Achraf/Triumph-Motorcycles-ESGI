@@ -9,6 +9,7 @@ import {
 import { CreateUserUseCase } from "../../../application/use-cases/user/CreateUserUseCase";
 import { CreateUserDTO } from "../../../application/use-cases/user/CreateUserDTO";
 import { LoginUserUseCase } from "../../../application/use-cases/user/LoginUserUseCase";
+import { GetAllUsersUseCase } from "../../../application/use-cases/user/GetAllUsersUseCase";
 import { LoginUserDTO } from "../../../application/use-cases/user/LoginUserDTO";
 import { AuthService } from "../../../infrastructure/auth/AuthService";
 import { EmailAlreadyExistsException } from "../../../domain/exceptions/EmailAlreadyExistsException";
@@ -19,7 +20,8 @@ import { ZodError } from "zod";
 export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
-    private readonly loginUserUseCase: LoginUserUseCase
+    private readonly loginUserUseCase: LoginUserUseCase,
+    private readonly getAllUsersUseCase: GetAllUsersUseCase
   ) {}
 
   @Post("register")
@@ -62,6 +64,12 @@ export class UserController {
 
   @Get("me")
   async getProfile(@Req() req: Request) {
-    return { message: "Profil utilisateur",  user: (req as any).user };
+    return { message: "Profil utilisateur", user: (req as any).user };
+  }
+
+  @Get("all")
+  async getAllUsers() {
+    const users = await this.getAllUsersUseCase.execute();
+    return users;
   }
 }

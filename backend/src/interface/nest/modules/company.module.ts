@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
-import { CompanyController } from '../controllers/company.controller';
-import { CompanyUseCaseProviders } from '../providers/company/CompanyUseCaseProviders';
+// src/interface/nest/modules/company.module.ts
+import { Module } from "@nestjs/common";
+import { CompanyController } from "../controllers/company.controller";
+import { CompanyUseCaseProviders } from "../providers/company/CompanyUseCaseProviders";
 
 @Module({
   controllers: [CompanyController],

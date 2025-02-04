@@ -1,6 +1,6 @@
-import { Entity, PrimaryColumn, Column } from "typeorm";
+import { Entity, PrimaryColumn, Column } from 'typeorm';
 
-@Entity("companies")
+@Entity('companies')
 export class CompanyTypeORMEntity {
   @PrimaryColumn()
   id: string;
@@ -9,5 +9,8 @@ export class CompanyTypeORMEntity {
   name: string;
 
   @Column()
-  managerId: string; // userId
+  managerUserId: string;
+
+  @Column()
+  createdAt: Date;
 }
