@@ -16,13 +16,11 @@ const Landing = () => {
         >
           Connexion
         </button>
-        <button
-          className="landing__button landing__button--signup"
-          onClick={() => navigate("/signup")} 
-        >
-          Inscription
-        </button>
       </div>
+      <h2>
+        Si vous n'avez pas de compte, contactez l'administrateur à cette adresse :{" "}
+        <a href="mailto:admin@gg.fr">admin@gg.fr</a>
+      </h2>
     </div>
   );
 };

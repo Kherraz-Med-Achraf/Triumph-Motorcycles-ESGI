@@ -14,15 +14,14 @@ export class UserEntity {
     public role: UserRole,
     public nom: string,
     public prenom: string,
+    public createdAt: Date = new Date(),
     // Champs Driver ou Client
     public motorcycleId?: string,
     public licenseExpiration?: Date,
     public licenseCountry?: string,
-    public licenseNumber?: string,
+    public licenseNumber?: number,
+    public address?: string,
     // Champs Driver
     public experience?: UserExperience, //'NOVICE' | 'INTERMEDIATE' | 'EXPERT'
-    // Champs Client
-    public address?: string,
-    public createdAt: Date = new Date()
   ) {}
 }

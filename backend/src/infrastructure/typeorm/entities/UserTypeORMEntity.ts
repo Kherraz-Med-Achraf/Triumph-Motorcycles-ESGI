@@ -22,7 +22,10 @@ export class UserTypeORMEntity {
 
   @Column()
   prenom: string;
-
+  
+  @Column()
+  createdAt: Date;
+  
   // Driver/Client
   @Column({ type: "uuid", nullable: true })
   motorcycleId: string | null;
@@ -35,19 +38,13 @@ export class UserTypeORMEntity {
   
 
   @Column({ type: "varchar", length: 20, nullable: true })
-  licenseNumber: string | null;
+  licenseNumber: number | null;
   
+  @Column({ type: "varchar", length: 255, nullable: true })
+  address: string | null;
 
   // Driver
   @Column({ type: "varchar", length: 15, nullable: true })
   experience: string | null;
   
-
-  // Client
-  @Column({ type: "varchar", length: 255, nullable: true })
-  address: string | null;
-  
-
-  @Column()
-  createdAt: Date;
 }

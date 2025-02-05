@@ -16,18 +16,17 @@ export class UserTypeORMRepository implements UserRepository {
     entity.email = user.email;
     entity.password = user.password;
     entity.role = user.role;
-
+    
     entity.nom = user.nom;
     entity.prenom = user.prenom;
-
+    entity.createdAt = user.createdAt;
+    
     entity.motorcycleId = user.motorcycleId ?? null;
     entity.licenseExpiration = user.licenseExpiration ?? null;
     entity.licenseCountry = user.licenseCountry ?? null;
     entity.licenseNumber = user.licenseNumber ?? null;
-    entity.experience = user.experience ?? null;
     entity.address = user.address ?? null;
-
-    entity.createdAt = user.createdAt;
+    entity.experience = user.experience ?? null;
 
     await this.ormRepo.save(entity);
     return user;
@@ -44,13 +43,13 @@ export class UserTypeORMRepository implements UserRepository {
       entity.role as UserRole,
       entity.nom,
       entity.prenom,
+      entity.createdAt,
       entity.motorcycleId ?? undefined,
       entity.licenseExpiration ?? undefined,
       entity.licenseCountry ?? undefined,
       entity.licenseNumber ?? undefined,
-      entity.experience ? (entity.experience as UserExperience) : undefined,
       entity.address ?? undefined,
-      entity.createdAt
+      entity.experience ? (entity.experience as UserExperience) : undefined
     );
   }
 
@@ -64,13 +63,13 @@ export class UserTypeORMRepository implements UserRepository {
         entity.role as UserRole,
         entity.nom,
         entity.prenom,
+        entity.createdAt,
         entity.motorcycleId ?? undefined,
         entity.licenseExpiration ?? undefined,
         entity.licenseCountry ?? undefined,
         entity.licenseNumber ?? undefined,
-        entity.experience ? (entity.experience as UserExperience) : undefined,
         entity.address ?? undefined,
-        entity.createdAt
+        entity.experience ? (entity.experience as UserExperience) : undefined
       );
     });
   }
@@ -81,18 +80,17 @@ export class UserTypeORMRepository implements UserRepository {
     entity.email = user.email;
     entity.password = user.password;
     entity.role = user.role;
-
+    
     entity.nom = user.nom;
     entity.prenom = user.prenom;
-
+    entity.createdAt = user.createdAt;
+    
     entity.motorcycleId = user.motorcycleId ?? null;
     entity.licenseExpiration = user.licenseExpiration ?? null;
     entity.licenseCountry = user.licenseCountry ?? null;
     entity.licenseNumber = user.licenseNumber ?? null;
-    entity.experience = user.experience ?? null;
     entity.address = user.address ?? null;
-
-    entity.createdAt = user.createdAt;
+    entity.experience = user.experience ?? null;
 
     await this.ormRepo.save(entity);
     return user;
@@ -113,13 +111,13 @@ export class UserTypeORMRepository implements UserRepository {
       entity.role as UserRole,
       entity.nom,
       entity.prenom,
+      entity.createdAt,
       entity.motorcycleId ?? undefined,
       entity.licenseExpiration ?? undefined,
       entity.licenseCountry ?? undefined,
       entity.licenseNumber ?? undefined,
-      entity.experience ? (entity.experience as UserExperience) : undefined,
       entity.address ?? undefined,
-      entity.createdAt
+      entity.experience ? (entity.experience as UserExperience) : undefined
     );
   }
 }

@@ -3,7 +3,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import Login from "./components/auth/Login";
 import SwitchBackend from "./components/SwitchBackend";
 import Dashboard from "./components/dashboard/Dashboard";
 import DashboardHome from "./components/dashboard/DashboardHome";

@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setToken, fetchUser } from "../store/slices/authSlice";
-import { AppDispatch } from "../store/store";
-import { getApiUrl } from "../config/apiUrls";
-import { toast } from "react-toastify"; // ✅ Import react-toastify
-import "react-toastify/dist/ReactToastify.css"; // ✅ Import des styles (si pas encore fait)
-import "../styles/pages/login.scss";
+import { setToken, fetchUser } from "../../store/slices/authSlice";
+import { AppDispatch } from "../../store/store";
+import { getApiUrl } from "../../config/apiUrls";
+import { toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
+import "../../styles/components/auth/login.scss";
 
 export function Login() {
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ export function Login() {
       dispatch(setToken(data.token));
       dispatch(fetchUser(data.token));
       navigate("/");
-    } catch (error) {
+    } catch {
       toast.error("Erreur de connexion au serveur.");
     }
   };

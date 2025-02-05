@@ -8,15 +8,14 @@ export const UserRoleEnum = z.enum([
   "DRIVER",
 ]);
 
-// On définit un schéma de base avec champs optionnels
+export const UserExperienceEnum = z.enum(["NOVICE", "INTERMEDIATE", "EXPERT"]);
+
 export const CreateUserSchema = z
   .object({
     email: z.string().email({ message: "Email invalide" }),
-    password: z
-      .string()
-      .min(6, {
-        message: "Le mot de passe doit contenir au moins 6 caractères",
-      }),
+    password: z.string().min(6, {
+      message: "Le mot de passe doit contenir au moins 6 caractères",
+    }),
     role: UserRoleEnum,
     nom: z
       .string()
@@ -24,23 +23,69 @@ export const CreateUserSchema = z
     prenom: z
       .string()
       .min(2, { message: "Le prénom doit contenir au moins 2 caractères" }),
-
-    // Champs driver/client
-    licenseExpiration: z.string().optional(),
-    licenseCountry: z.string().optional(),
-    licenseNumber: z.string().optional(),
+    createdAt: z.date().default(() => new Date()),
     motorcycleId: z.string().uuid().optional(),
-    // Champs driver
-    experience: z
-      .enum(["NOVICE", "INTERMEDIATE", "EXPERT"], {
-        message: "L'expérience doit être NOVICE, INTERMEDIATE ou EXPERT",
-      })
-      .optional(),
-    // Champs client
+    licenseExpiration: z.string().optional(),
+    licenseCountry: z.string().length(2, { message: "Le code du pays doit contenir exactement 2 caractères" }).optional(),
+    licenseNumber: z.number().optional(),
     address: z.string().optional(),
+    experience: UserExperienceEnum.optional(),
   })
   .superRefine((data, ctx) => {
-    // role=DRIVER
+    if (data.role === "DRIVER" || data.role === "CLIENT") {
+      if (!data.motorcycleId) {
+        ctx.addIssue({
+          code: "custom",
+          message: "motorcycleId est requis pour un DRIVER ou un CLIENT",
+          path: ["motorcycleId"],
+        });
+      }
+      if (!data.licenseExpiration) {
+        ctx.addIssue({
+          code: "custom",
+          message: "licenseExpiration est requis pour un DRIVER ou un CLIENT",
+          path: ["licenseExpiration"],
+        });
+      }
+      if (!data.licenseCountry) {
+        ctx.addIssue({
+          code: "custom",
+          message: "licenseCountry est requis pour un DRIVER ou un CLIENT",
+          path: ["licenseCountry"],
+        });
+      }
+      if (!data.licenseNumber) {
+        ctx.addIssue({
+          code: "custom",
+          message: "licenseNumber est requis pour un DRIVER ou un CLIENT",
+          path: ["licenseNumber"],
+        });
+      }
+      if (data.role === "CLIENT" && !data.address) {
+        ctx.addIssue({
+          code: "custom",
+          message: "address est requis pour un CLIENT",
+          path: ["address"],
+        });
+      }
+    } else {
+      // Supprimer les champs interdits pour les autres rôles
+      if (
+        data.motorcycleId ||
+        data.licenseExpiration ||
+        data.licenseCountry ||
+        data.licenseNumber ||
+        data.address ||
+        data.experience
+      ) {
+        ctx.addIssue({
+          code: "custom",
+          message:
+            "Les champs liés au permis et à l'expérience ne doivent pas être fournis pour ce rôle",
+          path: ["role"],
+        });
+      }
+    }
     if (data.role === "DRIVER") {
       if (!data.experience) {
         ctx.addIssue({
@@ -49,36 +94,13 @@ export const CreateUserSchema = z
           path: ["experience"],
         });
       }
-      if (!data.licenseNumber) {
-        ctx.addIssue({
-          code: "custom",
-          message: "licenseNumber est requis pour un DRIVER",
-          path: ["licenseNumber"],
-        });
-      }
-      if (!data.licenseExpiration) {
-        ctx.addIssue({
-          code: "custom",
-          message: "licenseExpiration est requis pour un DRIVER",
-          path: ["licenseExpiration"],
-        });
-      }
-      if (!data.licenseCountry) {
-        ctx.addIssue({
-          code: "custom",
-          message: "licenseCountry est requis pour un DRIVER",
-          path: ["licenseCountry"],
-        });
-      }
     }
-
-    // role=CLIENT
     if (data.role === "CLIENT") {
-      if (!data.address) {
+      if (data.experience) {
         ctx.addIssue({
           code: "custom",
-          message: "address est requis pour un CLIENT",
-          path: ["address"],
+          message: "experience ne doit pas être fourni pour un CLIENT",
+          path: ["experience"],
         });
       }
     }

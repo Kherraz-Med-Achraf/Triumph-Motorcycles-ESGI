@@ -9,21 +9,24 @@ export class CreateUserUseCase {
   constructor(private userRepo: UserRepository) {}
 
   async execute(input: CreateUserDTO): Promise<UserEntity> {
-    //validation Zod
+    // Validation Zod
     const dto = CreateUserSchema.parse(input);
 
-    // verification si l'email existe déjà
+    // Vérification si l'email existe déjà
     const existing = await this.userRepo.findByEmail(dto.email);
     if (existing) {
       throw new EmailAlreadyExistsException();
     }
 
-    //hash password
+    // Hash du mot de passe
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
-    // Convert licenseExpiration string en Date
+    // Conversion de licenseExpiration string en Date
     let licenseExpirationDate: Date | undefined;
-    if (dto.role === "DRIVER" && dto.licenseExpiration) {
+    if (
+      (dto.role === "DRIVER" || dto.role === "CLIENT") &&
+      dto.licenseExpiration
+    ) {
       licenseExpirationDate = new Date(dto.licenseExpiration);
     }
 
@@ -34,20 +37,13 @@ export class CreateUserUseCase {
       dto.role,
       dto.nom,
       dto.prenom,
-
-      // motorcycleId
+      new Date(), // createdAt
       dto.motorcycleId,
-
-      // licenseExpiration
       licenseExpirationDate,
       dto.licenseCountry,
       dto.licenseNumber,
-
-      // experience
-      dto.experience,
-
-      // address
-      dto.address
+      dto.address,
+      dto.experience
     );
 
     return await this.userRepo.create(user);
