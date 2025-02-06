@@ -1,10 +1,23 @@
-// src/interface/nest/modules/company.module.ts
-import { Module } from "@nestjs/common";
+import { Module, MiddlewareConsumer, RequestMethod } from "@nestjs/common";
 import { CompanyController } from "../controllers/company.controller";
-import { CompanyUseCaseProviders } from "../providers/company/CompanyUseCaseProviders";
+import { CompanyProviders } from "../providers/company";
+import { AuthMiddleware } from "../middleware/AuthMiddleware";
 
 @Module({
   controllers: [CompanyController],
-  providers: [...CompanyUseCaseProviders],
+  providers: [...CompanyProviders],
+  exports: [...CompanyProviders],
 })
-export class CompanyModule {}
+export class CompanyModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes(
+        { path: "companies/create", method: RequestMethod.POST }, 
+        { path: "companies", method: RequestMethod.GET }, 
+        { path: "companies/:id", method: RequestMethod.GET },
+        { path: "companies/:id", method: RequestMethod.PUT }, 
+        { path: "companies/:id", method: RequestMethod.DELETE } 
+      );
+  }
+}

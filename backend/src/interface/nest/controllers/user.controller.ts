@@ -6,8 +6,8 @@ import {
   Req,
   BadRequestException,
 } from "@nestjs/common";
-import { CreateUserUseCase } from "../../../application/use-cases/user/CreateUserUseCase";
-import { CreateUserDTO } from "../../../application/use-cases/user/CreateUserDTO";
+import { CreateUserUseCase } from "../../../application/use-cases/user/CreateUser/CreateUserUseCase";
+import { CreateUserDTO } from "../../../application/use-cases/user/CreateUser/CreateUserDTO";
 import { LoginUserUseCase } from "../../../application/use-cases/user/LoginUserUseCase";
 import { GetAllUsersUseCase } from "../../../application/use-cases/user/GetAllUsersUseCase";
 import { LoginUserDTO } from "../../../application/use-cases/user/LoginUserDTO";

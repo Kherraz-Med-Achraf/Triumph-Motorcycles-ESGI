@@ -1,15 +1,15 @@
 import { Entity, PrimaryColumn, Column } from "typeorm";
 
-@Entity("companies")
-export class CompanyTypeORMEntity {
+@Entity("company_motorcycles")
+export class CompanyMotorcycleTypeORMEntity {
   @PrimaryColumn()
   id: string;
 
   @Column()
-  name: string;
+  companyId: string;    
 
   @Column()
-  address: string;
+  motorcycleId: string; 
 
   @Column()
   createdAt: Date;

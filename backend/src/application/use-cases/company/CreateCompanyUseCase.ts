@@ -1,31 +1,23 @@
-
 import { v4 as uuidv4 } from "uuid";
-import { CreateCompanyDTO, CreateCompanySchema } from "./CreateCompanyDTO";
-import { CompanyRepository } from "../../../domain/repositories/CompanyRepository";
-import { UserRepository } from "../../../domain/repositories/UserRepository";
 import { CompanyEntity } from "../../../domain/entities/CompanyEntity";
-import { ManagerUserNotFoundException } from "../../../domain/exceptions/ManagerUserNotFoundException";
+import { CompanyRepository } from "../../../domain/repositories/CompanyRepository";
+import { CreateCompanySchema, CreateCompanyDTO } from "./CreateCompanyDTO";
+import { CompanyAlreadyExistsException } from "../../../domain/exceptions/company/CompanyAlreadyExistsException"; // ✅ Import exception
 
 export class CreateCompanyUseCase {
-  constructor(
-    private companyRepo: CompanyRepository,
-    private userRepo: UserRepository 
-  ) {}
+  constructor(private companyRepo: CompanyRepository) {}
 
   async execute(input: CreateCompanyDTO): Promise<CompanyEntity> {
     const dto = CreateCompanySchema.parse(input);
 
-    const managerUser = await this.userRepo.findById(dto.managerUserId);
-
-    if (!managerUser || managerUser.role !== "MANAGER_COMPANY") {
-      throw new ManagerUserNotFoundException();
+    const existingCompany = await this.companyRepo.findByName(dto.name);
+    if (existingCompany) {
+      throw new CompanyAlreadyExistsException();
     }
-
-    const newId = uuidv4();
     const company = new CompanyEntity(
-      newId,
+      uuidv4(),
       dto.name,
-      managerUser.id,
+      dto.address,
       new Date()
     );
 

@@ -1,7 +1,8 @@
-import { Repository } from 'typeorm';
-import { CompanyTypeORMEntity } from '../entities/CompanyTypeORMEntity';
-import { CompanyRepository } from '../../../domain/repositories/CompanyRepository';
-import { CompanyEntity } from '../../../domain/entities/CompanyEntity';
+// src/infrastructure/typeorm/repositories/CompanyTypeORMRepository.ts
+import { Repository } from "typeorm";
+import { CompanyEntity } from "../../../domain/entities/CompanyEntity";
+import { CompanyRepository } from "../../../domain/repositories/CompanyRepository";
+import { CompanyTypeORMEntity } from "../entities/CompanyTypeORMEntity";
 
 export class CompanyTypeORMRepository implements CompanyRepository {
   constructor(private ormRepo: Repository<CompanyTypeORMEntity>) {}
@@ -10,7 +11,7 @@ export class CompanyTypeORMRepository implements CompanyRepository {
     const entity = new CompanyTypeORMEntity();
     entity.id = company.id;
     entity.name = company.name;
-    entity.managerUserId = company.managerUserId;
+    entity.address = company.address;
     entity.createdAt = company.createdAt;
 
     await this.ormRepo.save(entity);
@@ -20,10 +21,23 @@ export class CompanyTypeORMRepository implements CompanyRepository {
   async findById(id: string): Promise<CompanyEntity | null> {
     const entity = await this.ormRepo.findOneBy({ id });
     if (!entity) return null;
+
     return new CompanyEntity(
       entity.id,
       entity.name,
-      entity.managerUserId,
+      entity.address,
+      entity.createdAt
+    );
+  }
+
+  async findByName(name: string): Promise<CompanyEntity | null> {
+    const entity = await this.ormRepo.findOne({ where: { name } }); 
+    if (!entity) return null;
+
+    return new CompanyEntity(
+      entity.id,
+      entity.name,
+      entity.address,
       entity.createdAt
     );
   }
@@ -34,7 +48,7 @@ export class CompanyTypeORMRepository implements CompanyRepository {
       new CompanyEntity(
         ent.id,
         ent.name,
-        ent.managerUserId,
+        ent.address,
         ent.createdAt
       )
     );
@@ -44,7 +58,7 @@ export class CompanyTypeORMRepository implements CompanyRepository {
     const entity = new CompanyTypeORMEntity();
     entity.id = company.id;
     entity.name = company.name;
-    entity.managerUserId = company.managerUserId;
+    entity.address = company.address;
     entity.createdAt = company.createdAt;
 
     await this.ormRepo.save(entity);

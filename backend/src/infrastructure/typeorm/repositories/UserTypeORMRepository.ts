@@ -1,10 +1,6 @@
 import { Repository } from "typeorm";
-import {
-  UserEntity,
-  UserRole,
-  UserExperience,
-} from "../../../domain/entities/UserEntity";
 import { UserRepository } from "../../../domain/repositories/UserRepository";
+import { UserEntity, UserRole } from "../../../domain/entities/UserEntity";
 import { UserTypeORMEntity } from "../entities/UserTypeORMEntity";
 
 export class UserTypeORMRepository implements UserRepository {
@@ -16,17 +12,9 @@ export class UserTypeORMRepository implements UserRepository {
     entity.email = user.email;
     entity.password = user.password;
     entity.role = user.role;
-    
     entity.nom = user.nom;
     entity.prenom = user.prenom;
     entity.createdAt = user.createdAt;
-    
-    entity.motorcycleId = user.motorcycleId ?? null;
-    entity.licenseExpiration = user.licenseExpiration ?? null;
-    entity.licenseCountry = user.licenseCountry ?? null;
-    entity.licenseNumber = user.licenseNumber ?? null;
-    entity.address = user.address ?? null;
-    entity.experience = user.experience ?? null;
 
     await this.ormRepo.save(entity);
     return user;
@@ -43,13 +31,7 @@ export class UserTypeORMRepository implements UserRepository {
       entity.role as UserRole,
       entity.nom,
       entity.prenom,
-      entity.createdAt,
-      entity.motorcycleId ?? undefined,
-      entity.licenseExpiration ?? undefined,
-      entity.licenseCountry ?? undefined,
-      entity.licenseNumber ?? undefined,
-      entity.address ?? undefined,
-      entity.experience ? (entity.experience as UserExperience) : undefined
+      entity.createdAt
     );
   }
 
@@ -63,13 +45,7 @@ export class UserTypeORMRepository implements UserRepository {
         entity.role as UserRole,
         entity.nom,
         entity.prenom,
-        entity.createdAt,
-        entity.motorcycleId ?? undefined,
-        entity.licenseExpiration ?? undefined,
-        entity.licenseCountry ?? undefined,
-        entity.licenseNumber ?? undefined,
-        entity.address ?? undefined,
-        entity.experience ? (entity.experience as UserExperience) : undefined
+        entity.createdAt
       );
     });
   }
@@ -80,17 +56,9 @@ export class UserTypeORMRepository implements UserRepository {
     entity.email = user.email;
     entity.password = user.password;
     entity.role = user.role;
-    
     entity.nom = user.nom;
     entity.prenom = user.prenom;
     entity.createdAt = user.createdAt;
-    
-    entity.motorcycleId = user.motorcycleId ?? null;
-    entity.licenseExpiration = user.licenseExpiration ?? null;
-    entity.licenseCountry = user.licenseCountry ?? null;
-    entity.licenseNumber = user.licenseNumber ?? null;
-    entity.address = user.address ?? null;
-    entity.experience = user.experience ?? null;
 
     await this.ormRepo.save(entity);
     return user;
@@ -98,12 +66,12 @@ export class UserTypeORMRepository implements UserRepository {
 
   async delete(id: string): Promise<void> {
     await this.ormRepo.delete(id);
+    // onDelete: 'CASCADE' s'applique => driverProfile sera supprimé
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
     const entity = await this.ormRepo.findOneBy({ email });
     if (!entity) return null;
-
     return new UserEntity(
       entity.id,
       entity.email,
@@ -111,13 +79,7 @@ export class UserTypeORMRepository implements UserRepository {
       entity.role as UserRole,
       entity.nom,
       entity.prenom,
-      entity.createdAt,
-      entity.motorcycleId ?? undefined,
-      entity.licenseExpiration ?? undefined,
-      entity.licenseCountry ?? undefined,
-      entity.licenseNumber ?? undefined,
-      entity.address ?? undefined,
-      entity.experience ? (entity.experience as UserExperience) : undefined
+      entity.createdAt
     );
   }
 }

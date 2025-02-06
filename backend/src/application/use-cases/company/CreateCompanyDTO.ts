@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const CreateCompanySchema = z.object({
-  name: z.string().min(1, "Le nom de la company est requis"),
-  managerUserId: z.string().uuid("managerUserId doit être un UUID"),
+  name: z.string().min(1, "Le nom de l'entreprise est requis."),
+  address: z.string().min(1, "L'adresse est requise."),
 });
 
 export type CreateCompanyDTO = z.infer<typeof CreateCompanySchema>;
