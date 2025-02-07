@@ -17,12 +17,11 @@ import { UpdateCompanyUseCase } from "../../../application/use-cases/company/Upd
 import { DeleteCompanyUseCase } from "../../../application/use-cases/company/DeleteCompanyUseCase";
 import { CreateCompanyDTO } from "../../../application/use-cases/company/CreateCompanyDTO";
 import { UpdateCompanyDTO } from "../../../application/use-cases/company/UpdateCompanyDTO";
-import { AdminGuard } from "../guards/AdminGuard";
-
 import { CompanyAlreadyExistsException } from "../../../domain/exceptions/company/CompanyAlreadyExistsException";
 import { CompanyNotFoundException } from "../../../domain/exceptions/company/CompanyNotFoundException";
 import { CompanyUpdateFailedException } from "../../../domain/exceptions/company/CompanyUpdateFailedException";
 
+import { AdminGuard } from "../guards/AdminGuard";
 import { ZodError } from "zod";
 
 @Controller("companies")
@@ -54,7 +53,6 @@ export class CompanyController {
       throw error;
     }
   }
-
 
   @UseGuards(AdminGuard)
   @Get(":id")

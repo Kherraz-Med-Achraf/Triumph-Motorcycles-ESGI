@@ -4,11 +4,14 @@ import bodyParser from "body-parser";
 
 import { createUserRouter } from "./routes/user.router";
 import { createCompanyRouter } from "./routes/company.router";
-import { CreateUserUseCase } from "../../application/use-cases/user/CreateUser/CreateUserUseCase";
+import { CreateUserUseCase } from "../../application/use-cases/user/CreateUserUseCase";
 import { LoginUserUseCase } from "../../application/use-cases/user/LoginUserUseCase";
 import { GetAllUsersUseCase } from "../../application/use-cases/user/GetAllUsersUseCase";
 import { CreateCompanyUseCase } from "../../application/use-cases/company/CreateCompanyUseCase";
 import { GetAllCompaniesUseCase } from "../../application/use-cases/company/GetAllCompaniesUseCase";
+import { GetUserUseCase } from "../../application/use-cases/user/GetUserUseCase";
+import { UpdateUserUseCase } from "../../application/use-cases/user/UpdateUserUseCase";
+import { DeleteUserUseCase } from "../../application/use-cases/user/DeleteUserUseCase";
 import { GetCompanyUseCase } from "../../application/use-cases/company/GetCompanyUseCase";
 import { UpdateCompanyUseCase } from "../../application/use-cases/company/UpdateCompanyUseCase";
 import { DeleteCompanyUseCase } from "../../application/use-cases/company/DeleteCompanyUseCase";
@@ -17,6 +20,9 @@ export function buildApp(
   createUserUseCase: CreateUserUseCase,
   loginUserUseCase: LoginUserUseCase,
   getAllUsersUseCase: GetAllUsersUseCase,
+  getUserUseCase: GetUserUseCase,
+  updateUserUseCase: UpdateUserUseCase,
+  deleteUserUseCase: DeleteUserUseCase,
   createCompanyUseCase: CreateCompanyUseCase,
   getAllCompaniesUseCase: GetAllCompaniesUseCase,
   getCompanyUseCase: GetCompanyUseCase,
@@ -38,7 +44,10 @@ export function buildApp(
   const userRouter = createUserRouter(
     createUserUseCase,
     loginUserUseCase,
-    getAllUsersUseCase
+    getAllUsersUseCase,
+    getUserUseCase,
+    updateUserUseCase,
+    deleteUserUseCase
   );
   app.use("/users", userRouter);
 

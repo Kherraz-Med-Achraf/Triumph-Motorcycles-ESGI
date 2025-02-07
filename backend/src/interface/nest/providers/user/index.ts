@@ -2,6 +2,9 @@ import { UserRepositoryProvider, DriverRepositoryProvider  } from "./UserReposit
 import { CreateUserUseCaseProvider } from "./CreateUserUseCase.provider";
 import { LoginUserUseCaseProvider } from "./LoginUserUseCase.provider";
 import { GetAllUsersUseCaseProvider } from "./GetAllUsersUseCase.provider";
+import { GetUserUseCaseProvider } from "./GetUserUseCase.provider";
+import { UpdateUserUseCaseProvider } from "./UpdateUserUseCase.provider";
+import { DeleteUserUseCaseProvider } from "./DeleteUserUseCase.provider";
 
 export const UserProviders = [
   UserRepositoryProvider,
@@ -9,4 +12,7 @@ export const UserProviders = [
   CreateUserUseCaseProvider,
   LoginUserUseCaseProvider,
   GetAllUsersUseCaseProvider,
+  GetUserUseCaseProvider,
+  UpdateUserUseCaseProvider,
+  DeleteUserUseCaseProvider,
 ];
