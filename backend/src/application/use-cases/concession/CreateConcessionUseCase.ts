@@ -1,12 +1,12 @@
+import { v4 as uuidv4 } from "uuid";
+import { ConcessionEntity } from "../../../domain/entities/ConcessionEntity";
 import { ConcessionRepository } from "../../../domain/repositories/ConcessionRepository";
 import { UserRepository } from "../../../domain/repositories/UserRepository";
-import { ConcessionEntity } from "../../../domain/entities/ConcessionEntity";
-import { v4 as uuid } from "uuid";
+import { CreateConcessionDTO, CreateConcessionSchema } from "./CreateConcessionDTO";
+import { ConcessionAlreadyExistsException } from "../../../domain/exceptions/concession/ConcessionAlreadyExistsException";
+import { UserNotFoundException } from "../../../domain/exceptions/user/UserNotFoundException";
+import { InvalidUserRoleException } from "../../../domain/exceptions/user/InvalidUserRoleException";
 
-export interface CreateConcessionDTO {
-  name: string;
-  managerUserId: string;
-}
 
 export class CreateConcessionUseCase {
   constructor(
@@ -14,16 +14,35 @@ export class CreateConcessionUseCase {
     private userRepo: UserRepository
   ) {}
 
-  async execute(dto: CreateConcessionDTO): Promise<ConcessionEntity> {
-    const manager = await this.userRepo.findById(dto.managerUserId);
-    if (!manager) {
-      throw new Error("Manager user does not exist");
-    }
-    if (manager.role !== "MANAGER_CONCESSION") {
-      throw new Error("User is not a MANAGER_CONCESSION");
+  async execute(input: CreateConcessionDTO): Promise<ConcessionEntity> {
+    // Validation du DTO
+    const dto = CreateConcessionSchema.parse(input);
+
+    // Vérifier si une concession avec ce nom existe déjà
+    const existingConcession = await this.concessionRepo.findByName(dto.name);
+    if (existingConcession) {
+      throw new ConcessionAlreadyExistsException();
     }
 
-    const concession = new ConcessionEntity(uuid(), dto.name, manager.id);
+    // Vérifier si l'utilisateur existe et a bien le rôle MANAGER_CONCESSION
+    const user = await this.userRepo.findById(dto.managerUserId);
+    if (!user) {
+      throw new UserNotFoundException();
+    }
+
+    if (user.role !== "MANAGER_CONCESSION") {
+      throw new InvalidUserRoleException();
+    }
+
+    const newId = uuidv4();
+
+    const concession = new ConcessionEntity(
+      newId,
+      dto.name,
+      dto.managerUserId,
+      dto.address,
+      new Date()
+    );
     return await this.concessionRepo.create(concession);
   }
 }

@@ -9,5 +9,11 @@ export class ConcessionTypeORMEntity {
   name: string;
 
   @Column()
-  managerId: string;
+  managerUserId: string;
+
+  @Column()
+  address: string;
+
+  @Column()
+  createdAt: Date;
 }
