@@ -2,6 +2,7 @@ import React from "react";
 import { Grid } from "gridjs-react";
 import "gridjs/dist/theme/mermaid.css";
 
+
 interface DataTableProps {
   columns: any[];
   data: any[];

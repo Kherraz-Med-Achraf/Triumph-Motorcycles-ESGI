@@ -1,10 +1,11 @@
-import { ConcessionEntity } from "../entities/ConcessionEntity";
+import { MotorcycleEntity } from "../entities/MotorcycleEntity";
 
-export interface ConcessionRepository {
-  create(concession: ConcessionEntity): Promise<ConcessionEntity>;
-  findById(id: string): Promise<ConcessionEntity | null>;
-  findByName(name: string): Promise<ConcessionEntity | null>;
-  findAll(): Promise<ConcessionEntity[]>;
-  update(concession: ConcessionEntity): Promise<ConcessionEntity>;
+export interface MotorcycleRepository {
+  create(moto: MotorcycleEntity): Promise<MotorcycleEntity>;
+  findById(id: string): Promise<MotorcycleEntity | null>;
+  findAll(): Promise<MotorcycleEntity[]>;
+  update(moto: MotorcycleEntity): Promise<MotorcycleEntity>;
   delete(id: string): Promise<void>;
+  findAllByConcession(concessionId: string): Promise<MotorcycleEntity[]>;
+  findByVin(vin: string): Promise<MotorcycleEntity | null>;
 }

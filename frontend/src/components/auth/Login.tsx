@@ -27,7 +27,7 @@ export function Login() {
       const data = await resp.json();
 
       if (!resp.ok) {
-        toast.error(data.error || "Erreur inconnue lors de la connexion.");
+        toast.error(data.message || "Erreur inconnue lors de la connexion.");
         return;
       }
 

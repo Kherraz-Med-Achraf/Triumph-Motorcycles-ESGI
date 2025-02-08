@@ -34,7 +34,6 @@ export class CompanyController {
     private readonly deleteCompanyUseCase: DeleteCompanyUseCase
   ) {}
 
-  // ✅ Create a new company (Admin only)
   @UseGuards(AdminGuard)
   @Post("create")
   async create(@Body() body: CreateCompanyDTO) {

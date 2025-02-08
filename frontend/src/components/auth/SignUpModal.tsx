@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { getApiUrl } from "../../config/apiUrls";
-import "../../styles/components/auth/SignUpModal.scss";
+import "../../styles/components/auth/Modal.scss";
 
 // Définition des rôles et expériences
 export type UserRole =

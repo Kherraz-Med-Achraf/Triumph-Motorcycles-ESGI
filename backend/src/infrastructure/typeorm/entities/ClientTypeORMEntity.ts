@@ -13,15 +13,15 @@ export class ClientTypeORMEntity {
   @Column()
   userId: string;
 
-  @Column({ nullable: true })
-  address: string | null;
+  @Column({ type: "text", nullable: true })
+  address: string | null;  
 
   @Column({ type: "date", nullable: true })
   licenseExpiration: Date | null;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true }) 
   licenseCountry: string | null;
 
-  @Column({ nullable: true })
+  @Column({ type: "text", nullable: true }) 
   licenseNumber: string | null;
 }
