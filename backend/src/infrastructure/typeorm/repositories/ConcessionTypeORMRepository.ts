@@ -10,7 +10,7 @@ export class ConcessionTypeORMRepository implements ConcessionRepository {
     const entity = new ConcessionTypeORMEntity();
     entity.id = concession.id;
     entity.name = concession.name;
-    entity.managerUserId = concession.managerUserId;
+    entity.managerUserId = concession.managerUserId ?? null;
     entity.address = concession.address;
     entity.createdAt = concession.createdAt;
 
@@ -25,7 +25,7 @@ export class ConcessionTypeORMRepository implements ConcessionRepository {
     return new ConcessionEntity(
       entity.id,
       entity.name,
-      entity.managerUserId,
+      entity.managerUserId ?? null,
       entity.address,
       entity.createdAt,
     );
@@ -38,7 +38,7 @@ export class ConcessionTypeORMRepository implements ConcessionRepository {
     return new ConcessionEntity(
       entity.id,
       entity.name,
-      entity.managerUserId,
+      entity.managerUserId ?? null,
       entity.address,
       entity.createdAt,
     );
@@ -50,7 +50,7 @@ export class ConcessionTypeORMRepository implements ConcessionRepository {
       new ConcessionEntity(
         ent.id,
         ent.name,
-        ent.managerUserId,
+        ent.managerUserId ?? null,
         ent.address,
         ent.createdAt,
       )
@@ -61,7 +61,7 @@ export class ConcessionTypeORMRepository implements ConcessionRepository {
     const entity = new ConcessionTypeORMEntity();
     entity.id = concession.id;
     entity.name = concession.name;
-    entity.managerUserId = concession.managerUserId;
+    entity.managerUserId = concession.managerUserId ?? null;
     entity.address = concession.address;
     entity.createdAt = concession.createdAt;
 

@@ -3,6 +3,7 @@ import { ZodError } from "zod";
 import { CreateCompanyUseCase } from "../../../application/use-cases/company/CreateCompanyUseCase";
 import { GetAllCompaniesUseCase } from "../../../application/use-cases/company/GetAllCompaniesUseCase";
 import { GetCompanyUseCase } from "../../../application/use-cases/company/GetCompanyUseCase";
+import { GetCompanyFromUserUseCase } from "../../../application/use-cases/company/GetCompanyFromUserUseCase";
 import { UpdateCompanyUseCase } from "../../../application/use-cases/company/UpdateCompanyUseCase";
 import { DeleteCompanyUseCase } from "../../../application/use-cases/company/DeleteCompanyUseCase";
 
@@ -12,17 +13,19 @@ import { adminMiddleware } from "../middlewares/adminMiddleware";
 import { CompanyAlreadyExistsException } from "../../../domain/exceptions/company/CompanyAlreadyExistsException";
 import { CompanyNotFoundException } from "../../../domain/exceptions/company/CompanyNotFoundException";
 import { CompanyUpdateFailedException } from "../../../domain/exceptions/company/CompanyUpdateFailedException";
+import { UserNotFoundException } from "../../../domain/exceptions/user/UserNotFoundException";
+
 
 export function createCompanyRouter(
   createCompanyUseCase: CreateCompanyUseCase,
   getAllCompaniesUseCase: GetAllCompaniesUseCase,
   getCompanyUseCase: GetCompanyUseCase,
+  getCompanyFromUserUseCase: GetCompanyFromUserUseCase,
   updateCompanyUseCase: UpdateCompanyUseCase,
   deleteCompanyUseCase: DeleteCompanyUseCase
 ) {
   const router = Router();
 
-  // POST /companies/create (protected by authMiddleware + adminMiddleware)
   router.post(
     "/create",
     authMiddleware,
@@ -40,6 +43,12 @@ export function createCompanyRouter(
         }
         if (error instanceof CompanyAlreadyExistsException) {
           return res.status(400).json({ message: error.message });
+        }
+        if (error instanceof UserNotFoundException) {
+          return res.status(404).json({ message: error.message });
+        }
+        if (error instanceof CompanyNotFoundException) {
+          return res.status(404).json({ message: error.message });
         }
         return res
           .status(500)
@@ -74,6 +83,35 @@ export function createCompanyRouter(
       } catch (error) {
         if (error instanceof CompanyNotFoundException) {
           return res.status(404).json({ message: error.message });
+        }
+        return res
+          .status(500)
+          .json({ message: "Erreur serveur", details: error });
+      }
+    }
+  );
+  // GET /companies/user/:userId
+  router.get(
+    "/user/:userId",
+    authMiddleware,
+    adminMiddleware,
+    async (req: Request, res: Response) => {
+      try {
+        const company = await getCompanyFromUserUseCase.execute(
+          req.params.userId
+        );
+        return res.json(company);
+      } catch (error) {
+        if (error instanceof UserNotFoundException) {
+          return res.status(404).json({ message: error.message });
+        }
+        if (error instanceof CompanyNotFoundException) {
+          return res
+            .status(404)
+            .json({
+              message:
+                "L'entreprise associée à cet utilisateur n'a pas été trouvée.",
+            });
         }
         return res
           .status(500)

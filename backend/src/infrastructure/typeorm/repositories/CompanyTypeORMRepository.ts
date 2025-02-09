@@ -1,4 +1,3 @@
-// src/infrastructure/typeorm/repositories/CompanyTypeORMRepository.ts
 import { Repository } from "typeorm";
 import { CompanyEntity } from "../../../domain/entities/CompanyEntity";
 import { CompanyRepository } from "../../../domain/repositories/CompanyRepository";
@@ -12,6 +11,7 @@ export class CompanyTypeORMRepository implements CompanyRepository {
     entity.id = company.id;
     entity.name = company.name;
     entity.address = company.address;
+    entity.userId = company.userId ?? null;
     entity.createdAt = company.createdAt;
 
     await this.ormRepo.save(entity);
@@ -26,31 +26,48 @@ export class CompanyTypeORMRepository implements CompanyRepository {
       entity.id,
       entity.name,
       entity.address,
+      entity.userId ?? null,
       entity.createdAt
     );
   }
 
   async findByName(name: string): Promise<CompanyEntity | null> {
-    const entity = await this.ormRepo.findOne({ where: { name } }); 
+    const entity = await this.ormRepo.findOne({ where: { name } });
     if (!entity) return null;
 
     return new CompanyEntity(
       entity.id,
       entity.name,
       entity.address,
+      entity.userId ?? null,
       entity.createdAt
     );
   }
 
   async findAll(): Promise<CompanyEntity[]> {
     const entities = await this.ormRepo.find();
-    return entities.map(ent => 
-      new CompanyEntity(
-        ent.id,
-        ent.name,
-        ent.address,
-        ent.createdAt
-      )
+    return entities.map(
+      (ent) =>
+        new CompanyEntity(
+          ent.id,
+          ent.name,
+          ent.address,
+          ent.userId ?? null,
+          ent.createdAt
+        )
+    );
+  }
+
+  async findByUserId(userId: string): Promise<CompanyEntity | null> {
+    const entity = await this.ormRepo.findOne({ where: { userId } });
+    if (!entity) return null;
+
+    return new CompanyEntity(
+      entity.id,
+      entity.name,
+      entity.address,
+      entity.userId,
+      entity.createdAt
     );
   }
 
@@ -59,6 +76,7 @@ export class CompanyTypeORMRepository implements CompanyRepository {
     entity.id = company.id;
     entity.name = company.name;
     entity.address = company.address;
+    entity.userId = company.userId ?? null;
     entity.createdAt = company.createdAt;
 
     await this.ormRepo.save(entity);

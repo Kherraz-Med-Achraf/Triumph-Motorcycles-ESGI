@@ -67,20 +67,6 @@ export const CreateUserSchema = z
           path: ["licenseNumber"],
         });
       }
-      if (!data.companyId) {
-        ctx.addIssue({
-          code: "custom",
-          message: "companyId est requis pour un DRIVER",
-          path: ["companyId"],
-        });
-      }
-      if (!data.companyMotorcycleId) {
-        ctx.addIssue({
-          code: "custom",
-          message: "companyMotorcycleId est requis pour un DRIVER",
-          path: ["companyMotorcycleId"],
-        });
-      }
     }
 
     // Validation spécifique aux CLIENTS

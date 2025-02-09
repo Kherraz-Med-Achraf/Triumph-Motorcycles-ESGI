@@ -30,7 +30,6 @@ export const UpdateUserSchema = z.object({
     })
     .optional(),
   licenseNumber: z.string().optional(),
-  companyId: z.string().uuid().optional(),
   companyMotorcycleId: z.string().uuid().optional(),
 
   // Champs CLIENT

@@ -1,4 +1,3 @@
-// SignUpModal.tsx
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { getApiUrl } from "../../config/apiUrls";
@@ -32,17 +31,17 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   const [password, setPassword] = useState("");
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
-  // Rôle 
+  // Rôle
   const [role, setRole] = useState<UserRole>(isAdmin ? "CLIENT" : "CLIENT");
 
-  // Champs CLIENT et DRIVER
-  const [motorcycleId, setMotorcycleId] = useState("");
+
   const [licenseExpiration, setLicenseExpiration] = useState("");
   const [licenseCountry, setLicenseCountry] = useState("");
-  const [licenseNumber, setLicenseNumber] = useState(0);
-  // Pour CLIENT
+  const [licenseNumber, setLicenseNumber] = useState(""); // passe en string
+
+  // Pour CLIENT uniquement
   const [address, setAddress] = useState("");
-  // Pour DRIVER
+  // Pour DRIVER uniquement
   const [experience, setExperience] = useState<UserExperience>("NOVICE");
 
   // Gestion des erreurs de validation locale (affichées à côté des champs)
@@ -55,10 +54,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       setPassword("");
       setNom("");
       setPrenom("");
-      setMotorcycleId("");
       setLicenseExpiration("");
       setLicenseCountry("");
-      setLicenseNumber(0);
+      setLicenseNumber("");
       setAddress("");
       setExperience("NOVICE");
       setRole(isAdmin ? "CLIENT" : "CLIENT");
@@ -79,18 +77,18 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     const newErrors: { [key: string]: string } = {};
     if (!email) newErrors.email = "L'email est requis";
     if (!password || password.length < 6)
-      newErrors.password = "Le mot de passe doit contenir au moins 6 caractères";
+      newErrors.password =
+        "Le mot de passe doit contenir au moins 6 caractères";
     if (!nom || nom.length < 2)
       newErrors.nom = "Le nom doit contenir au moins 2 caractères";
     if (!prenom || prenom.length < 2)
       newErrors.prenom = "Le prénom doit contenir au moins 2 caractères";
 
-    // Pour CLIENT et DRIVER, on exige certains champs
+    // Pour CLIENT et DRIVER, on exige certains champs du permis
     if (role === "CLIENT" || role === "DRIVER") {
-      if (!motorcycleId)
-        newErrors.motorcycleId = "Le champ motorcycleId est requis";
       if (!licenseExpiration)
-        newErrors.licenseExpiration = "La date d'expiration du permis est requise";
+        newErrors.licenseExpiration =
+          "La date d'expiration du permis est requise";
       if (!licenseCountry)
         newErrors.licenseCountry = "Le pays du permis est requis";
       if (!licenseNumber)
@@ -113,10 +111,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       nom: string;
       prenom: string;
       role: UserRole;
-      motorcycleId?: string;
       licenseExpiration?: string;
       licenseCountry?: string;
-      licenseNumber?: number;
+      licenseNumber?: string;
       address?: string;
       experience?: UserExperience;
     }
@@ -127,10 +124,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       nom,
       prenom,
       role,
-      motorcycleId: role === "CLIENT" || role === "DRIVER" ? motorcycleId : undefined,
-      licenseExpiration: role === "CLIENT" || role === "DRIVER" ? licenseExpiration : undefined,
-      licenseCountry: role === "CLIENT" || role === "DRIVER" ? licenseCountry : undefined,
-      licenseNumber: role === "CLIENT" || role === "DRIVER" ? licenseNumber : undefined,
+      licenseExpiration:
+        role === "CLIENT" || role === "DRIVER" ? licenseExpiration : undefined,
+      licenseCountry:
+        role === "CLIENT" || role === "DRIVER" ? licenseCountry : undefined,
+      licenseNumber:
+        role === "CLIENT" || role === "DRIVER" ? licenseNumber : undefined,
       address: role === "CLIENT" ? address : undefined,
       experience: role === "DRIVER" ? experience : undefined,
     };
@@ -148,11 +147,14 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
         if (data.errors) {
           const backendErrors: { [key: string]: string } = {};
           Object.keys(data.errors).forEach((field) => {
-            backendErrors[field] = data.errors[field]?._errors?.[0] || data.errors[field];
+            backendErrors[field] =
+              data.errors[field]?._errors?.[0] || data.errors[field];
           });
           setErrors(backendErrors);
         } else {
-          toast.error(data.message || "Erreur lors de la création de l'utilisateur");
+          toast.error(
+            data.message || "Erreur lors de la création de l'utilisateur"
+          );
         }
         return;
       }
@@ -221,52 +223,24 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             {errors.prenom && <p className="error-message">{errors.prenom}</p>}
           </div>
           {/* Sélection du rôle */}
-          {isAdmin ? (
-            <div className="modal__group">
-              <label>Rôle :</label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as UserRole)}
-              >
-                {availableRoles.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-              {errors.role && <p className="error-message">{errors.role}</p>}
-            </div>
-          ) : (
-            <div className="modal__group">
-              <label>Rôle :</label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as UserRole)}
-              >
-                {availableRoles.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          <div className="modal__group">
+            <label>Rôle :</label>
+            <select
+              value={role}
+              onChange={(e) => setRole(e.target.value as UserRole)}
+            >
+              {availableRoles.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+            {errors.role && <p className="error-message">{errors.role}</p>}
+          </div>
 
+          {/* Pour CLIENT et DRIVER : champs pour le permis */}
           {(role === "CLIENT" || role === "DRIVER") && (
             <>
-              <div className="modal__group">
-                <label>Motorcycle ID :</label>
-                <input
-                  type="text"
-                  value={motorcycleId}
-                  onChange={(e) => setMotorcycleId(e.target.value)}
-                  placeholder="UUID de la moto"
-                  required
-                />
-                {errors.motorcycleId && (
-                  <p className="error-message">{errors.motorcycleId}</p>
-                )}
-              </div>
               <div className="modal__group">
                 <label>Date d'expiration du permis :</label>
                 <input
@@ -294,9 +268,9 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
               <div className="modal__group">
                 <label>Numéro du permis :</label>
                 <input
-                  type="number"
+                  type="text"
                   value={licenseNumber}
-                  onChange={(e) => setLicenseNumber(Number(e.target.value))}
+                  onChange={(e) => setLicenseNumber(e.target.value)}
                   required
                 />
                 {errors.licenseNumber && (

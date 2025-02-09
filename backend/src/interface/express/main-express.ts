@@ -22,6 +22,7 @@ import { DeleteUserUseCase } from "../../application/use-cases/user/DeleteUserUs
 import { CreateCompanyUseCase } from "../../application/use-cases/company/CreateCompanyUseCase";
 import { GetAllCompaniesUseCase } from "../../application/use-cases/company/GetAllCompaniesUseCase";
 import { GetCompanyUseCase } from "../../application/use-cases/company/GetCompanyUseCase";
+import { GetCompanyFromUserUseCase } from "../../application/use-cases/company/GetCompanyFromUserUseCase";
 import { UpdateCompanyUseCase } from "../../application/use-cases/company/UpdateCompanyUseCase";
 import { DeleteCompanyUseCase } from "../../application/use-cases/company/DeleteCompanyUseCase";
 
@@ -35,24 +36,47 @@ async function startExpress() {
     console.log("✅ Base de données connectée !");
 
     // Instancier les repositories
-    const userRepo = new UserTypeORMRepository(AppDataSource.getRepository(UserTypeORMEntity));
-    const driverRepo = new DriverTypeORMRepository(AppDataSource.getRepository(DriverTypeORMEntity));
-    const companyRepo = new CompanyTypeORMRepository(AppDataSource.getRepository(CompanyTypeORMEntity));
-
+    const userRepo = new UserTypeORMRepository(
+      AppDataSource.getRepository(UserTypeORMEntity)
+    );
+    const driverRepo = new DriverTypeORMRepository(
+      AppDataSource.getRepository(DriverTypeORMEntity)
+    );
+    const companyRepo = new CompanyTypeORMRepository(
+      AppDataSource.getRepository(CompanyTypeORMEntity)
+    );
 
     // User Use Cases
-    const createUserUseCase = new CreateUserUseCase(userRepo, driverRepo, companyRepo);
+    const createUserUseCase = new CreateUserUseCase(
+      userRepo,
+      driverRepo,
+      companyRepo
+    );
     const loginUserUseCase = new LoginUserUseCase(userRepo);
     const getAllUsersUseCase = new GetAllUsersUseCase(userRepo);
     const getUserUseCase = new GetUserUseCase(userRepo, driverRepo);
-    const updateUserUseCase = new UpdateUserUseCase(userRepo, driverRepo, companyRepo);
+    const updateUserUseCase = new UpdateUserUseCase(
+      userRepo,
+      driverRepo,
+      companyRepo
+    );
     const deleteUserUseCase = new DeleteUserUseCase(userRepo);
 
     // Company Use Cases
-    const createCompanyUseCase = new CreateCompanyUseCase(companyRepo);
+    const createCompanyUseCase = new CreateCompanyUseCase(
+      companyRepo,
+      userRepo
+    );
     const getAllCompaniesUseCase = new GetAllCompaniesUseCase(companyRepo);
     const getCompanyUseCase = new GetCompanyUseCase(companyRepo);
-    const updateCompanyUseCase = new UpdateCompanyUseCase(companyRepo);
+    const getCompanyFromUserUseCase = new GetCompanyFromUserUseCase(
+      companyRepo,
+      userRepo
+    );
+    const updateCompanyUseCase = new UpdateCompanyUseCase(
+      companyRepo,
+      userRepo
+    );
     const deleteCompanyUseCase = new DeleteCompanyUseCase(companyRepo);
 
     // Construire l'app Express
@@ -66,15 +90,17 @@ async function startExpress() {
       createCompanyUseCase,
       getAllCompaniesUseCase,
       getCompanyUseCase,
+      getCompanyFromUserUseCase,
       updateCompanyUseCase,
       deleteCompanyUseCase
     );
 
     // Lancement du serveur
     app.listen(5000, () => {
-      console.log("✅ Express est en cours d'exécution sur http://localhost:5000");
+      console.log(
+        "✅ Express est en cours d'exécution sur http://localhost:5000"
+      );
     });
-
   } catch (error) {
     console.error("❌ Erreur lors de l'initialisation de TypeORM :", error);
     process.exit(1);

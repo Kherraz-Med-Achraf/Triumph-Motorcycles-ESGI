@@ -28,13 +28,11 @@ export class CreateUserUseCase {
 
     // Pour un DRIVER, vérifier que l'entreprise existe AVANT de créer l'utilisateur
     if (dto.role === "DRIVER") {
-      if (!dto.companyId) {
-        throw new CompanyNotFoundException();
-      }
-
-      const company = await this.companyRepo.findById(dto.companyId);
-      if (!company) {
-        throw new CompanyNotFoundException();
+      if (dto.companyId) {
+        const company = await this.companyRepo.findById(dto.companyId);
+        if (!company) {
+          throw new CompanyNotFoundException();
+        }
       }
     }
 
@@ -51,7 +49,7 @@ export class CreateUserUseCase {
       dto.role,
       dto.nom,
       dto.prenom,
-      new Date() 
+      new Date()
     );
 
     const createdUser = await this.userRepo.create(user);
@@ -60,13 +58,13 @@ export class CreateUserUseCase {
     if (dto.role === "DRIVER") {
       const driver = new DriverEntity(
         uuidv4(), // ID du driver
-        userId,   // Associer le userId au driver
+        userId, // Associer le userId au driver
         dto.experience,
         dto.licenseExpiration ? new Date(dto.licenseExpiration) : undefined,
         dto.licenseCountry,
         dto.licenseNumber,
-        dto.companyId,         // Associer le driver à une company
-        dto.companyMotorcycleId  // Lier le driver à une moto spécifique de la company
+        dto.companyId || undefined,
+        dto.companyMotorcycleId || undefined
       );
 
       await this.driverRepo.create(driver);

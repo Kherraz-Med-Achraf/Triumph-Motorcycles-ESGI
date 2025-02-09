@@ -8,8 +8,8 @@ export class ConcessionTypeORMEntity {
   @Column()
   name: string;
 
-  @Column()
-  managerUserId: string;
+  @Column({ type: "text", nullable: true }) 
+  managerUserId: string | null;
 
   @Column()
   address: string;

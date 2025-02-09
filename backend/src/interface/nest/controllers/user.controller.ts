@@ -24,6 +24,7 @@ import { EmailAlreadyExistsException } from "../../../domain/exceptions/EmailAlr
 import { CompanyNotFoundException } from "../../../domain/exceptions/company/CompanyNotFoundException";
 import { UserNotFoundException } from "../../../domain/exceptions/user/UserNotFoundException";
 import { DriverNotFoundException } from "../../../domain/exceptions/user/DriverNotFoundException";
+import { InvalidDriverDataException } from "../../../domain/exceptions/user/InvalidDriverDataException";
 
 import { ZodError } from "zod";
 import { AdminGuard } from "../guards/AdminGuard";
@@ -129,6 +130,9 @@ export class UserController {
         throw new NotFoundException(error.message);
       }
       if (error instanceof EmailAlreadyExistsException) {
+        throw new BadRequestException(error.message);
+      }
+      if (error instanceof InvalidDriverDataException) {
         throw new BadRequestException(error.message);
       }
       throw error;

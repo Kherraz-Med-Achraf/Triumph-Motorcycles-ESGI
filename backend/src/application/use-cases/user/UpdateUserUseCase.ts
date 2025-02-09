@@ -69,16 +69,6 @@ export class UpdateUserUseCase {
       if (dto.licenseNumber) {
         driver.licenseNumber = dto.licenseNumber;
       }
-      if (dto.companyId) {
-        const company = await this.companyRepo.findById(dto.companyId);
-        if (!company) {
-          throw new CompanyNotFoundException();
-        }
-        driver.companyId = dto.companyId;
-      }
-      if (dto.companyMotorcycleId) {
-        driver.companyMotorcycleId = dto.companyMotorcycleId;
-      }
       await this.driverRepo.update(driver);
     }
 

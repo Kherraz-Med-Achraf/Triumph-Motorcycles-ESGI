@@ -13,6 +13,7 @@ import {
 import { CreateCompanyUseCase } from "../../../application/use-cases/company/CreateCompanyUseCase";
 import { GetCompanyUseCase } from "../../../application/use-cases/company/GetCompanyUseCase";
 import { GetAllCompaniesUseCase } from "../../../application/use-cases/company/GetAllCompaniesUseCase";
+import { GetCompanyFromUserUseCase } from "../../../application/use-cases/company/GetCompanyFromUserUseCase";
 import { UpdateCompanyUseCase } from "../../../application/use-cases/company/UpdateCompanyUseCase";
 import { DeleteCompanyUseCase } from "../../../application/use-cases/company/DeleteCompanyUseCase";
 import { CreateCompanyDTO } from "../../../application/use-cases/company/CreateCompanyDTO";
@@ -20,6 +21,8 @@ import { UpdateCompanyDTO } from "../../../application/use-cases/company/UpdateC
 import { CompanyAlreadyExistsException } from "../../../domain/exceptions/company/CompanyAlreadyExistsException";
 import { CompanyNotFoundException } from "../../../domain/exceptions/company/CompanyNotFoundException";
 import { CompanyUpdateFailedException } from "../../../domain/exceptions/company/CompanyUpdateFailedException";
+import { UserNotFoundException } from "../../../domain/exceptions/user/UserNotFoundException";
+import { InvalidUserRoleException } from "../../../domain/exceptions/user/InvalidUserRoleException";
 
 import { AdminGuard } from "../guards/AdminGuard";
 import { ZodError } from "zod";
@@ -30,6 +33,7 @@ export class CompanyController {
     private readonly createCompanyUseCase: CreateCompanyUseCase,
     private readonly getCompanyUseCase: GetCompanyUseCase,
     private readonly getAllCompaniesUseCase: GetAllCompaniesUseCase,
+    private readonly getCompanyFromUserUseCase: GetCompanyFromUserUseCase,
     private readonly updateCompanyUseCase: UpdateCompanyUseCase,
     private readonly deleteCompanyUseCase: DeleteCompanyUseCase
   ) {}
@@ -49,6 +53,13 @@ export class CompanyController {
       if (error instanceof CompanyAlreadyExistsException) {
         throw new BadRequestException(error.message);
       }
+      if (error instanceof UserNotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      if (error instanceof InvalidUserRoleException) {
+        throw new BadRequestException(error.message);
+      }
+
       throw error;
     }
   }
@@ -73,6 +84,24 @@ export class CompanyController {
   }
 
   @UseGuards(AdminGuard)
+  @Get("user/:userId")
+  async getCompanyFromUser(@Param("userId") userId: string) {
+    try {
+      return await this.getCompanyFromUserUseCase.execute(userId); // Appel du UseCase
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      if (error instanceof CompanyNotFoundException) {
+        throw new NotFoundException(
+          "L'entreprise associée à cet utilisateur n'a pas été trouvée."
+        );
+      }
+      throw error;
+    }
+  }
+
+  @UseGuards(AdminGuard)
   @Put(":id")
   async updateCompany(@Param("id") id: string, @Body() body: UpdateCompanyDTO) {
     try {
@@ -88,6 +117,12 @@ export class CompanyController {
         });
       }
       if (error instanceof CompanyUpdateFailedException) {
+        throw new BadRequestException(error.message);
+      }
+      if (error instanceof UserNotFoundException) {
+        throw new NotFoundException(error.message);
+      }
+      if (error instanceof InvalidUserRoleException) {
         throw new BadRequestException(error.message);
       }
       throw error;

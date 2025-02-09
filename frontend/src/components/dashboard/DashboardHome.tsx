@@ -58,7 +58,8 @@ const DashboardHome: React.FC = () => {
         navigate("/dashboard/company");
         break;
       case "MANAGER_CONCESSION":
-        message = "Bienvenue dans le tableau de bord du manager de la concession";
+        message =
+          "Bienvenue dans le tableau de bord du manager de la concession";
         break;
       case "CLIENT":
         message = "Bienvenue dans le tableau de bord Client";
@@ -127,7 +128,9 @@ const DashboardHome: React.FC = () => {
                   },
                 });
                 if (!resp.ok) {
-                  toast.error("Erreur lors de la suppression de l'utilisateur.");
+                  toast.error(
+                    "Erreur lors de la suppression de l'utilisateur."
+                  );
                   return;
                 }
                 toast.success("Utilisateur supprimé avec succès.");
@@ -201,7 +204,10 @@ const DashboardHome: React.FC = () => {
         <button onClick={() => setShowModal(true)} className="create-btn">
           Créer un nouvel utilisateur
         </button>
-        <button onClick={() => navigate("/dashboard/company")} className="create-btn">
+        <button
+          onClick={() => navigate("/dashboard/company")}
+          className="create-btn"
+        >
           Créer une nouvelle entreprise
         </button>
         <button onClick={() => setShowModal(true)} className="create-btn">
@@ -220,14 +226,13 @@ const DashboardHome: React.FC = () => {
         isAdmin={isAdmin}
       />
 
-      {/* Modal pour afficher ou modifier un utilisateur */}
       {selectedUser && (
         <EditUserModal
           show={!!selectedUser}
           onClose={() => setSelectedUser(null)}
           user={selectedUser}
           onUserUpdated={fetchUsers}
-          mode={modalMode} // "edit" ou "view"
+          mode={modalMode} 
         />
       )}
 
@@ -236,18 +241,18 @@ const DashboardHome: React.FC = () => {
         columns={[
           { id: "email", name: "Email" },
           { id: "role", name: "Rôle" },
-          { id: "createdAt", name: "Date de création" },
+          { id: "fullName", name: "Nom & Prénom" },
           {
             id: "actions",
             name: "Actions",
             formatter: (cell, row) => {
               return html(`
-                <div>
-                  <button class="view-btn" data-id="${cell}">Afficher</button>
-                  <button class="edit-btn" data-id="${cell}">Modifier</button>
-                  <button class="delete-btn" data-id="${cell}">Supprimer</button>
-                </div>
-              `);
+          <div>
+            <button class="view-btn" data-id="${cell}">Afficher</button>
+            <button class="edit-btn" data-id="${cell}">Modifier</button>
+            <button class="delete-btn" data-id="${cell}">Supprimer</button>
+          </div>
+        `);
             },
           },
         ]}
@@ -255,7 +260,7 @@ const DashboardHome: React.FC = () => {
           id: user.id,
           email: user.email,
           role: user.role,
-          createdAt: new Date(user.createdAt).toLocaleDateString(),
+          fullName: `${user.prenom} ${user.nom}`,
           actions: user.id,
         }))}
         search

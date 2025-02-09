@@ -11,6 +11,9 @@ export class CompanyTypeORMEntity {
   @Column()
   address: string;
 
+  @Column({ type: "text", nullable: true }) 
+  userId: string | null;
+
   @Column()
   createdAt: Date;
 }

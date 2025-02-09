@@ -14,6 +14,8 @@ import { DriverNotFoundException } from "../../../domain/exceptions/user/DriverN
 import { AuthService } from "../../../infrastructure/auth/AuthService";
 import { authMiddleware } from "../middlewares/authMiddleware";
 import { CompanyNotFoundException } from "../../../domain/exceptions/company/CompanyNotFoundException";
+import { InvalidDriverDataException } from "../../../domain/exceptions/user/InvalidDriverDataException";
+
 
 export function createUserRouter(
   createUserUseCase: CreateUserUseCase,
@@ -121,6 +123,9 @@ export function createUserRouter(
         return res.status(404).json({ message: error.message });
       }
       if (error instanceof EmailAlreadyExistsException) {
+        return res.status(400).json({ message: error.message });
+      }
+      if (error instanceof InvalidDriverDataException) {
         return res.status(400).json({ message: error.message });
       }
       return res.status(400).json({ message: (error as Error).message });

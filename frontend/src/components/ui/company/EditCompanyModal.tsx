@@ -5,10 +5,24 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../store/slices/authSlice";
 
+interface User {
+  id: string;
+  nom: string;
+  prenom: string;
+  role: string;
+}
+
+interface Company {
+  id: string;
+  name: string;
+  address: string;
+  userId?: string;
+}
+
 interface EditCompanyModalProps {
   show: boolean;
   onClose: () => void;
-  company: { id: string; name: string; address: string };
+  company: Company;
   onCompanyUpdated: () => void;
   mode?: "edit" | "view";
 }
@@ -22,17 +36,46 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
 }) => {
   const [name, setName] = useState(company.name);
   const [address, setAddress] = useState(company.address);
+  const [selectedUserId, setSelectedUserId] = useState(company.userId || "");
+  const [users, setUsers] = useState<User[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (show) {
+      // Réinitialisation des champs lors de l'ouverture de la modal
       setName(company.name);
       setAddress(company.address);
+      setSelectedUserId(company.userId || "");
       setErrors({});
+
+      // Récupération des utilisateurs (pour le select et l'affichage en mode view)
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        toast.error("Aucun token trouvé, accès refusé.");
+        dispatch(logout());
+        navigate("/");
+        return;
+      }
+      fetch(`${getApiUrl()}/users/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          // Filtrer pour ne garder que les utilisateurs avec le rôle MANAGER_COMPANY
+          const filteredUsers = data.filter((user: User) => user.role === "MANAGER_COMPANY");
+          setUsers(filteredUsers);
+        })
+        .catch((error) => {
+          console.error("Erreur lors du chargement des utilisateurs :", error);
+          toast.error("Erreur lors du chargement des utilisateurs.");
+        });
     }
-  }, [show, company]);
+  }, [show, company, dispatch, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,13 +104,16 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
         return;
       }
 
+      // On inclut également le userId dans la requête pour mettre à jour l'utilisateur associé
+      const body = { name, address, userId: selectedUserId || null };
+
       const resp = await fetch(`${getApiUrl()}/companies/${company.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ name, address }),
+        body: JSON.stringify(body),
       });
 
       if (!resp.ok) {
@@ -84,6 +130,9 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
   };
 
   if (!show) return null;
+
+  // En mode view, retrouver l'utilisateur associé pour afficher son nom complet
+  const associatedUser = users.find((user) => user.id === selectedUserId);
 
   return (
     <div className="modal">
@@ -114,6 +163,28 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
               disabled={mode === "view"}
             />
             {errors.address && <p className="error-message">{errors.address}</p>}
+          </div>
+          <div className="modal__group">
+            <label>Utilisateur associé :</label>
+            {mode === "edit" ? (
+              <select
+                value={selectedUserId}
+                onChange={(e) => setSelectedUserId(e.target.value)}
+              >
+                <option value="">-- Sélectionnez un utilisateur --</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.prenom} {user.nom}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="associated-user">
+                {associatedUser
+                  ? `${associatedUser.prenom} ${associatedUser.nom}`
+                  : "Aucun utilisateur associé"}
+              </div>
+            )}
           </div>
           <div className="modal__actions">
             {mode === "edit" ? (

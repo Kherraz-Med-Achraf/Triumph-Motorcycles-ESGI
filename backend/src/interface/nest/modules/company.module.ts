@@ -1,11 +1,12 @@
 import { Module, MiddlewareConsumer, RequestMethod } from "@nestjs/common";
 import { CompanyController } from "../controllers/company.controller";
 import { CompanyProviders } from "../providers/company";
+import { UserProviders } from "../providers/user";
 import { AuthMiddleware } from "../middleware/AuthMiddleware";
 
 @Module({
   controllers: [CompanyController],
-  providers: [...CompanyProviders],
+  providers: [...CompanyProviders, ...UserProviders],
   exports: [...CompanyProviders],
 })
 export class CompanyModule {

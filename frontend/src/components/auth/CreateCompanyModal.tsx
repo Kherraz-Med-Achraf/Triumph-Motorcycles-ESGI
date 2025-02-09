@@ -7,7 +7,13 @@ import { logout } from "../../store/slices/authSlice";
 
 import "../../styles/components/auth/Modal.scss";
 
-// Props
+interface User {
+  id: string;
+  nom: string;
+  prenom: string;
+  role: string;
+}
+
 interface CreateCompanyModalProps {
   show: boolean;
   onClose: () => void;
@@ -19,9 +25,10 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
   onClose,
   onCompanyCreated,
 }) => {
-
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState(""); // nouvel état pour le userId sélectionné
+  const [users, setUsers] = useState<User[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,9 +37,36 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
     if (show) {
       setName("");
       setAddress("");
+      setSelectedUserId("");
       setErrors({});
     }
   }, [show]);
+
+  useEffect(() => {
+    if (show) {
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        toast.error("Aucun token trouvé, accès refusé.");
+        dispatch(logout());
+        navigate("/");
+        return;
+      }
+      fetch(`${getApiUrl()}/users/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          const filteredUsers = data.filter((user: User) => user.role === "MANAGER_COMPANY");
+          setUsers(filteredUsers);
+        })
+        .catch((error) => {
+          console.error("Erreur lors du chargement des utilisateurs :", error);
+          toast.error("Erreur lors du chargement des utilisateurs.");
+        });
+    }
+  }, [show, dispatch, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +87,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
     const body = {
       name,
       address,
+      userId: selectedUserId || null,
     };
 
     try {
@@ -74,6 +109,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
       });
 
       const data = await resp.json();
+      console.log(resp);
 
       if (!resp.ok) {
         if (data.errors) {
@@ -85,7 +121,7 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
           setErrors(backendErrors);
         } else {
           toast.error(
-            data.message || "Erreur lors de la création de l'entreprise"
+            data.message || "Erreur lors de la création de l'utilisateur"
           );
         }
         return;
@@ -132,6 +168,21 @@ const CreateCompanyModal: React.FC<CreateCompanyModalProps> = ({
             {errors.address && (
               <p className="error-message">{errors.address}</p>
             )}
+          </div>
+          <div className="modal__group">
+            <label>Utilisateur associé :</label>
+            <select
+              value={selectedUserId}
+              onChange={(e) => setSelectedUserId(e.target.value)}
+            >
+              <option value="">-- Sélectionnez un utilisateur --</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.prenom} {user.nom}
+                </option>
+              ))}
+            </select>
+            {errors.userId && <p className="error-message">{errors.userId}</p>}
           </div>
           <div className="modal__actions">
             <button type="submit">Créer</button>
