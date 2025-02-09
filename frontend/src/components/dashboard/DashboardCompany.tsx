@@ -114,7 +114,7 @@ const DashboardCompany: React.FC = () => {
     fetchCompanies();
   }, []);
 
-  // Délégation d'événements pour capter les clics sur les boutons rendus par Grid.js
+ 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;

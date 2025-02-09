@@ -10,6 +10,9 @@ import { DriverTypeORMRepository } from "../../infrastructure/typeorm/repositori
 import { CompanyTypeORMEntity } from "../../infrastructure/typeorm/entities/CompanyTypeORMEntity";
 import { CompanyTypeORMRepository } from "../../infrastructure/typeorm/repositories/CompanyTypeORMRepository";
 
+import { ConcessionTypeORMRepository } from "../../infrastructure/typeorm/repositories/ConcessionTypeORMRepository";
+import { ConcessionTypeORMEntity } from "../../infrastructure/typeorm/entities/ConcessionTypeORMEntity";
+
 // User Use Cases
 import { CreateUserUseCase } from "../../application/use-cases/user/CreateUserUseCase";
 import { LoginUserUseCase } from "../../application/use-cases/user/LoginUserUseCase";
@@ -25,6 +28,14 @@ import { GetCompanyUseCase } from "../../application/use-cases/company/GetCompan
 import { GetCompanyFromUserUseCase } from "../../application/use-cases/company/GetCompanyFromUserUseCase";
 import { UpdateCompanyUseCase } from "../../application/use-cases/company/UpdateCompanyUseCase";
 import { DeleteCompanyUseCase } from "../../application/use-cases/company/DeleteCompanyUseCase";
+
+// Concession Use Cases
+import { CreateConcessionUseCase } from "../../application/use-cases/concession/CreateConcessionUseCase";
+import { GetAllConcessionsUseCase } from "../../application/use-cases/concession/GetAllConcessionsUseCase";
+import { GetConcessionUseCase } from "../../application/use-cases/concession/GetConcessionUseCase";
+import { GetConcessionFromUserUseCase } from "../../application/use-cases/concession/GetConcessionFromUserUseCase";
+import { UpdateConcessionUseCase } from "../../application/use-cases/concession/UpdateConcessionUseCase";
+import { DeleteConcessionUseCase } from "../../application/use-cases/concession/DeleteConcessionUseCase";
 
 // Express App Builder
 import { buildApp } from "./buildApp";
@@ -44,6 +55,9 @@ async function startExpress() {
     );
     const companyRepo = new CompanyTypeORMRepository(
       AppDataSource.getRepository(CompanyTypeORMEntity)
+    );
+    const concessionRepo = new ConcessionTypeORMRepository(
+      AppDataSource.getRepository(ConcessionTypeORMEntity)
     );
 
     // User Use Cases
@@ -79,6 +93,14 @@ async function startExpress() {
     );
     const deleteCompanyUseCase = new DeleteCompanyUseCase(companyRepo);
 
+    // Concession Use Cases
+    const createConcessionUseCase = new CreateConcessionUseCase(concessionRepo, userRepo);
+    const getAllConcessionsUseCase = new GetAllConcessionsUseCase(concessionRepo);
+    const getConcessionUseCase = new GetConcessionUseCase(concessionRepo);
+    const getConcessionFromUserUseCase = new GetConcessionFromUserUseCase(concessionRepo, userRepo);
+    const updateConcessionUseCase = new UpdateConcessionUseCase(concessionRepo, userRepo);
+    const deleteConcessionUseCase = new DeleteConcessionUseCase(concessionRepo);
+
     // Construire l'app Express
     const app = buildApp(
       createUserUseCase,
@@ -92,7 +114,13 @@ async function startExpress() {
       getCompanyUseCase,
       getCompanyFromUserUseCase,
       updateCompanyUseCase,
-      deleteCompanyUseCase
+      deleteCompanyUseCase,
+      createConcessionUseCase,
+      getAllConcessionsUseCase,
+      getConcessionUseCase,
+      getConcessionFromUserUseCase,
+      updateConcessionUseCase,
+      deleteConcessionUseCase
     );
 
     // Lancement du serveur

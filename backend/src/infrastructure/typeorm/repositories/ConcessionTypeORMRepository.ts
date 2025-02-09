@@ -57,6 +57,20 @@ export class ConcessionTypeORMRepository implements ConcessionRepository {
     );
   }
 
+
+  async findByUserId(userId: string): Promise<ConcessionEntity | null> {
+    const entity = await this.ormRepo.findOneBy({ managerUserId: userId });
+    if (!entity) return null;
+
+    return new ConcessionEntity(
+      entity.id,
+      entity.name,
+      entity.managerUserId ?? null,
+      entity.address,
+      entity.createdAt,
+    );
+  }
+
   async update(concession: ConcessionEntity): Promise<ConcessionEntity> {
     const entity = new ConcessionTypeORMEntity();
     entity.id = concession.id;
