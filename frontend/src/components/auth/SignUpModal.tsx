@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { getApiUrl } from "../../config/apiUrls";
 import "../../styles/components/auth/Modal.scss";
 
-// Définition des rôles et expériences
+
 export type UserRole =
   | "ADMIN"
   | "MANAGER_COMPANY"
@@ -26,12 +26,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   onUserCreated,
   isAdmin = false,
 }) => {
-  // Champs communs
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nom, setNom] = useState("");
   const [prenom, setPrenom] = useState("");
-  // Rôle
+ 
   const [role, setRole] = useState<UserRole>(isAdmin ? "CLIENT" : "CLIENT");
 
 
@@ -44,10 +44,10 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
   // Pour DRIVER uniquement
   const [experience, setExperience] = useState<UserExperience>("NOVICE");
 
-  // Gestion des erreurs de validation locale (affichées à côté des champs)
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // Réinitialiser les champs à l'ouverture de la modal
+  
   useEffect(() => {
     if (show) {
       setEmail("");
@@ -64,12 +64,12 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     }
   }, [show, isAdmin]);
 
-  // Détermine la liste des rôles disponibles
+  
   const availableRoles: UserRole[] = isAdmin
     ? ["ADMIN", "MANAGER_COMPANY", "MANAGER_CONCESSION", "CLIENT", "DRIVER"]
     : ["CLIENT", "DRIVER"];
 
-  // Handler du formulaire
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
@@ -84,7 +84,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
     if (!prenom || prenom.length < 2)
       newErrors.prenom = "Le prénom doit contenir au moins 2 caractères";
 
-    // Pour CLIENT et DRIVER, on exige certains champs du permis
+    
     if (role === "CLIENT" || role === "DRIVER") {
       if (!licenseExpiration)
         newErrors.licenseExpiration =
@@ -104,7 +104,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
       return;
     }
 
-    // Préparation du body selon le rôle sélectionné
+    
     interface UserBody {
       email: string;
       password: string;
@@ -222,7 +222,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             />
             {errors.prenom && <p className="error-message">{errors.prenom}</p>}
           </div>
-          {/* Sélection du rôle */}
+          
           <div className="modal__group">
             <label>Rôle :</label>
             <select
@@ -238,7 +238,7 @@ const SignUpModal: React.FC<SignUpModalProps> = ({
             {errors.role && <p className="error-message">{errors.role}</p>}
           </div>
 
-          {/* Pour CLIENT et DRIVER : champs pour le permis */}
+          
           {(role === "CLIENT" || role === "DRIVER") && (
             <>
               <div className="modal__group">

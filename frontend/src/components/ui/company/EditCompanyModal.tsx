@@ -45,13 +45,13 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
 
   useEffect(() => {
     if (show) {
-      // Réinitialisation des champs lors de l'ouverture de la modal
+      
       setName(company.name);
       setAddress(company.address);
       setSelectedUserId(company.userId || "");
       setErrors({});
 
-      // Récupération des utilisateurs (pour le select et l'affichage en mode view)
+      
       const token = localStorage.getItem("jwtToken");
       if (!token) {
         toast.error("Aucun token trouvé, accès refusé.");
@@ -66,7 +66,7 @@ const EditCompanyModal: React.FC<EditCompanyModalProps> = ({
       })
         .then((resp) => resp.json())
         .then((data) => {
-          // Filtrer pour ne garder que les utilisateurs avec le rôle MANAGER_COMPANY
+         
           const filteredUsers = data.filter((user: User) => user.role === "MANAGER_COMPANY");
           setUsers(filteredUsers);
         })

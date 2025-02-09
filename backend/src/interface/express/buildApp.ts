@@ -5,6 +5,9 @@ import bodyParser from "body-parser";
 import { createUserRouter } from "./routes/user.router";
 import { createCompanyRouter } from "./routes/company.router";
 import { createConcessionRouter } from "./routes/concession.router";
+import { createMotorcycleRouter } from "./routes/motorcycle.router";
+import { createCompanyMotorcycleRouter } from "./routes/companyMotorcycle.router";
+
 
 import { CreateUserUseCase } from "../../application/use-cases/user/CreateUserUseCase";
 import { LoginUserUseCase } from "../../application/use-cases/user/LoginUserUseCase";
@@ -28,6 +31,25 @@ import { GetConcessionFromUserUseCase } from "../../application/use-cases/conces
 import { UpdateConcessionUseCase } from "../../application/use-cases/concession/UpdateConcessionUseCase";
 import { DeleteConcessionUseCase } from "../../application/use-cases/concession/DeleteConcessionUseCase";
 
+import { CreateMotorcycleUseCase } from "../../application/use-cases/motorcycle/CreateMotorcycleUseCase";
+import { UpdateMotorcycleUseCase } from "../../application/use-cases/motorcycle/UpdateMotorcycleUseCase";
+import { CheckMaintenanceDueUseCase } from "../../application/use-cases/motorcycle/CheckMaintenanceDueUseCase";
+import { PerformMaintenanceUseCase } from "../../application/use-cases/motorcycle/PerformMaintenanceUseCase";
+import { GetAllMotorcyclesUseCase } from "../../application/use-cases/motorcycle/GetAllMotorcyclesUseCase";
+import { FindMotorcyclesByConcessionUseCase } from "../../application/use-cases/motorcycle/FindMotorcyclesByConcessionUseCase";
+import { FindMotorcycleByVinUseCase } from "../../application/use-cases/motorcycle/FindMotorcycleByVinUseCase";
+import { DeleteMotorcycleUseCase } from "../../application/use-cases/motorcycle/DeleteMotorcycleUseCase";
+
+import { CreateCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/CreateCompanyMotorcycleUseCase";
+import { GetCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/GetCompanyMotorcycleUseCase";
+import { GetAllCompanyMotorcyclesUseCase } from "../../application/use-cases/companyMotorcycle/GetAllCompanyMotorcyclesUseCase";
+import { GetCompanyMotorcyclesByCompanyUseCase } from "../../application/use-cases/companyMotorcycle/GetCompanyMotorcyclesByCompanyUseCase";
+import { GetCompanyMotorcyclesByMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/GetCompanyMotorcyclesByMotorcycleUseCase";
+import { UpdateCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/UpdateCompanyMotorcycleUseCase";
+import { DeleteCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/DeleteCompanyMotorcycleUseCase";
+
+
+
 export function buildApp(
   createUserUseCase: CreateUserUseCase,
   loginUserUseCase: LoginUserUseCase,
@@ -46,7 +68,22 @@ export function buildApp(
   getConcessionUseCase: GetConcessionUseCase,
   getConcessionFromUserUseCase: GetConcessionFromUserUseCase,
   updateConcessionUseCase: UpdateConcessionUseCase,
-  deleteConcessionUseCase: DeleteConcessionUseCase
+  deleteConcessionUseCase: DeleteConcessionUseCase,
+  createMotorcycleUseCase: CreateMotorcycleUseCase,
+  updateMotorcycleUseCase: UpdateMotorcycleUseCase,
+  checkMaintenanceDueUseCase: CheckMaintenanceDueUseCase,
+  performMaintenanceUseCase: PerformMaintenanceUseCase,
+  getAllMotorcyclesUseCase: GetAllMotorcyclesUseCase,
+  findMotorcyclesByConcessionUseCase: FindMotorcyclesByConcessionUseCase,
+  findMotorcycleByVinUseCase: FindMotorcycleByVinUseCase,
+  deleteMotorcycleUseCase: DeleteMotorcycleUseCase,
+  createCompanyMotorcycleUC: CreateCompanyMotorcycleUseCase,
+  getCompanyMotorcycleUC: GetCompanyMotorcycleUseCase,
+  getAllCompanyMotorcyclesUC: GetAllCompanyMotorcyclesUseCase,
+  getCompanyMotorcyclesByCompanyUC: GetCompanyMotorcyclesByCompanyUseCase,
+  getCompanyMotorcyclesByMotorcycleUC: GetCompanyMotorcyclesByMotorcycleUseCase,
+  updateCompanyMotorcycleUC: UpdateCompanyMotorcycleUseCase,
+  deleteCompanyMotorcycleUC: DeleteCompanyMotorcycleUseCase,
 ) {
   const app = express();
 
@@ -89,6 +126,29 @@ export function buildApp(
     deleteConcessionUseCase
   );
   app.use("/concessions", concessionRouter);
+
+    const motorcycleRouter = createMotorcycleRouter(
+      createMotorcycleUseCase,
+      updateMotorcycleUseCase,
+      checkMaintenanceDueUseCase,
+      performMaintenanceUseCase,
+      getAllMotorcyclesUseCase,
+      findMotorcyclesByConcessionUseCase,
+      findMotorcycleByVinUseCase,
+      deleteMotorcycleUseCase
+    );
+    app.use("/motorcycles", motorcycleRouter);
+
+    const companyMotorcycleRouter = createCompanyMotorcycleRouter(
+      createCompanyMotorcycleUC,
+      getCompanyMotorcycleUC,
+      getAllCompanyMotorcyclesUC,
+      getCompanyMotorcyclesByCompanyUC,
+      getCompanyMotorcyclesByMotorcycleUC,
+      updateCompanyMotorcycleUC,
+      deleteCompanyMotorcycleUC
+    );
+    app.use("/company-motorcycles", companyMotorcycleRouter);
 
   return app;
 }

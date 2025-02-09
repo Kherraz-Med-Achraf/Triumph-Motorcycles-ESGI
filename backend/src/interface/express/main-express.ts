@@ -13,6 +13,15 @@ import { CompanyTypeORMRepository } from "../../infrastructure/typeorm/repositor
 import { ConcessionTypeORMRepository } from "../../infrastructure/typeorm/repositories/ConcessionTypeORMRepository";
 import { ConcessionTypeORMEntity } from "../../infrastructure/typeorm/entities/ConcessionTypeORMEntity";
 
+import { MotorcycleTypeORMRepository } from "../../infrastructure/typeorm/repositories/MotorcycleTypeORMRepository";
+import { IntervalTypeORMRepository } from "../../infrastructure/typeorm/repositories/IntervalTypeORMRepository";
+import { MotorcycleTypeORMEntity } from "../../infrastructure/typeorm/entities/MotorcycleTypeORMEntity";
+import { IntervalTypeORMEntity } from "../../infrastructure/typeorm/entities/IntervalTypeORMEntity";
+
+import { CompanyMotorcycleTypeORMRepository } from "../../infrastructure/typeorm/repositories/CompanyMotorcycleTypeORMRepository";
+import { CompanyMotorcycleTypeORMEntity } from "../../infrastructure/typeorm/entities/CompanyMotorcycleTypeORMEntity";
+
+
 // User Use Cases
 import { CreateUserUseCase } from "../../application/use-cases/user/CreateUserUseCase";
 import { LoginUserUseCase } from "../../application/use-cases/user/LoginUserUseCase";
@@ -37,6 +46,25 @@ import { GetConcessionFromUserUseCase } from "../../application/use-cases/conces
 import { UpdateConcessionUseCase } from "../../application/use-cases/concession/UpdateConcessionUseCase";
 import { DeleteConcessionUseCase } from "../../application/use-cases/concession/DeleteConcessionUseCase";
 
+// Motorcycle Use Cases
+import { CreateMotorcycleUseCase } from "../../application/use-cases/motorcycle/CreateMotorcycleUseCase";
+import { UpdateMotorcycleUseCase } from "../../application/use-cases/motorcycle/UpdateMotorcycleUseCase";
+import { CheckMaintenanceDueUseCase } from "../../application/use-cases/motorcycle/CheckMaintenanceDueUseCase";
+import { PerformMaintenanceUseCase } from "../../application/use-cases/motorcycle/PerformMaintenanceUseCase";
+import { GetAllMotorcyclesUseCase } from "../../application/use-cases/motorcycle/GetAllMotorcyclesUseCase";
+import { FindMotorcyclesByConcessionUseCase } from "../../application/use-cases/motorcycle/FindMotorcyclesByConcessionUseCase";
+import { FindMotorcycleByVinUseCase } from "../../application/use-cases/motorcycle/FindMotorcycleByVinUseCase";
+import { DeleteMotorcycleUseCase } from "../../application/use-cases/motorcycle/DeleteMotorcycleUseCase";
+
+// CompanyMotorcycle Use Cases
+import { CreateCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/CreateCompanyMotorcycleUseCase";
+import { GetCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/GetCompanyMotorcycleUseCase";
+import { GetAllCompanyMotorcyclesUseCase } from "../../application/use-cases/companyMotorcycle/GetAllCompanyMotorcyclesUseCase";
+import { GetCompanyMotorcyclesByCompanyUseCase } from "../../application/use-cases/companyMotorcycle/GetCompanyMotorcyclesByCompanyUseCase";
+import { GetCompanyMotorcyclesByMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/GetCompanyMotorcyclesByMotorcycleUseCase";
+import { UpdateCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/UpdateCompanyMotorcycleUseCase";
+import { DeleteCompanyMotorcycleUseCase } from "../../application/use-cases/companyMotorcycle/DeleteCompanyMotorcycleUseCase";
+
 // Express App Builder
 import { buildApp } from "./buildApp";
 
@@ -59,6 +87,22 @@ async function startExpress() {
     const concessionRepo = new ConcessionTypeORMRepository(
       AppDataSource.getRepository(ConcessionTypeORMEntity)
     );
+
+    const motorcycleRepo = new MotorcycleTypeORMRepository(
+      AppDataSource.getRepository(MotorcycleTypeORMEntity)
+    );
+    const intervalRepo = new IntervalTypeORMRepository(
+      AppDataSource.getRepository(IntervalTypeORMEntity)
+    );
+
+    const companyMotorcycleRepo = new CompanyMotorcycleTypeORMRepository(
+      AppDataSource.getRepository(CompanyMotorcycleTypeORMEntity)
+    );
+
+
+
+ 
+
 
     // User Use Cases
     const createUserUseCase = new CreateUserUseCase(
@@ -101,6 +145,33 @@ async function startExpress() {
     const updateConcessionUseCase = new UpdateConcessionUseCase(concessionRepo, userRepo);
     const deleteConcessionUseCase = new DeleteConcessionUseCase(concessionRepo);
 
+    // Motorcycle Use Cases
+    const createMotorcycleUseCase = new CreateMotorcycleUseCase(
+      motorcycleRepo,
+      intervalRepo,
+      concessionRepo
+    );
+    const updateMotorcycleUseCase = new UpdateMotorcycleUseCase(
+      motorcycleRepo,
+      intervalRepo
+    );
+    const checkMaintenanceDueUseCase = new CheckMaintenanceDueUseCase(intervalRepo);
+    const performMaintenanceUseCase = new PerformMaintenanceUseCase(intervalRepo);
+    const getAllMotorcyclesUseCase = new GetAllMotorcyclesUseCase(motorcycleRepo);
+    const findMotorcyclesByConcessionUseCase = new FindMotorcyclesByConcessionUseCase(motorcycleRepo);
+    const findMotorcycleByVinUseCase = new FindMotorcycleByVinUseCase(motorcycleRepo, intervalRepo);
+    const deleteMotorcycleUseCase = new DeleteMotorcycleUseCase(motorcycleRepo);
+
+    // CompanyMotorcycle Use Cases
+    const createCompanyMotorcycleUC = new CreateCompanyMotorcycleUseCase(companyMotorcycleRepo);
+    const getCompanyMotorcycleUC = new GetCompanyMotorcycleUseCase(companyMotorcycleRepo);
+    const getAllCompanyMotorcyclesUC = new GetAllCompanyMotorcyclesUseCase(companyMotorcycleRepo);
+    const getByCompanyUC = new GetCompanyMotorcyclesByCompanyUseCase(companyMotorcycleRepo);
+    const getByMotorcycleUC = new GetCompanyMotorcyclesByMotorcycleUseCase(companyMotorcycleRepo);
+    const updateCompanyMotorcycleUC = new UpdateCompanyMotorcycleUseCase(companyMotorcycleRepo);
+    const deleteCompanyMotorcycleUC = new DeleteCompanyMotorcycleUseCase(companyMotorcycleRepo);
+
+
     // Construire l'app Express
     const app = buildApp(
       createUserUseCase,
@@ -120,7 +191,22 @@ async function startExpress() {
       getConcessionUseCase,
       getConcessionFromUserUseCase,
       updateConcessionUseCase,
-      deleteConcessionUseCase
+      deleteConcessionUseCase,
+      createMotorcycleUseCase,
+      updateMotorcycleUseCase,
+      checkMaintenanceDueUseCase,
+      performMaintenanceUseCase,
+      getAllMotorcyclesUseCase,
+      findMotorcyclesByConcessionUseCase,
+      findMotorcycleByVinUseCase,
+      deleteMotorcycleUseCase,
+      createCompanyMotorcycleUC,
+      getCompanyMotorcycleUC,
+      getAllCompanyMotorcyclesUC,
+      getByCompanyUC,
+      getByMotorcycleUC,
+      updateCompanyMotorcycleUC,
+      deleteCompanyMotorcycleUC
     );
 
     // Lancement du serveur

@@ -20,7 +20,7 @@ export function createConcessionRouter(
 ) {
   const router = Router();
 
-  router.post("/", async (req: Request, res: Response) => {
+  router.post("/create", async (req: Request, res: Response) => {
     try {
       const concession = await createConcessionUseCase.execute(req.body);
       return res.status(201).json({ message: "Concession created", concession });

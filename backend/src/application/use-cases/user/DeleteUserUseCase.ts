@@ -6,7 +6,7 @@ export class DeleteUserUseCase {
   constructor(private userRepo: UserRepository) {}
 
   /**
-   * @param userId Identifiant de l'utilisateur à supprimer.
+   * @param userId 
    */
   async execute(userId: string): Promise<void> {
     const user = await this.userRepo.findById(userId);

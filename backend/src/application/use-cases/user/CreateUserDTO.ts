@@ -21,7 +21,7 @@ export const CreateUserSchema = z
     prenom: z.string().min(2, { message: "Le prénom doit contenir au moins 2 caractères" }),
     createdAt: z.date().default(() => new Date()),
 
-    // Champs optionnels selon le rôle
+    
     motorcycleId: z.string().uuid().optional(),
     licenseExpiration: z.string().transform((val) => new Date(val)).optional(),
     licenseCountry: z.string().length(2, {
@@ -37,7 +37,7 @@ export const CreateUserSchema = z
     const isDriver = data.role === "DRIVER";
     const isClient = data.role === "CLIENT";
 
-    // Validation spécifique aux DRIVERS
+   
     if (isDriver) {
       if (!data.experience) {
         ctx.addIssue({
@@ -69,7 +69,7 @@ export const CreateUserSchema = z
       }
     }
 
-    // Validation spécifique aux CLIENTS
+   
     if (isClient) {
       if (!data.address) {
         ctx.addIssue({
@@ -87,7 +87,7 @@ export const CreateUserSchema = z
       }
     }
 
-    // Pour les autres rôles, suppression des champs non nécessaires
+    
     if (!isDriver && !isClient) {
       if (data.motorcycleId || data.licenseExpiration || data.licenseCountry || data.licenseNumber || data.experience || data.address || data.companyId || data.companyMotorcycleId) {
         ctx.addIssue({

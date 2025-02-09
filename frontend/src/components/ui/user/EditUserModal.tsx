@@ -55,13 +55,13 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // Pour afficher l'entreprise associée pour MANAGER_COMPANY
+ 
   const [company, setCompany] = useState<Company | null>(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // À chaque ouverture, initialiser les champs depuis le user passé en props
+  
   useEffect(() => {
     if (show) {
       setEmail(user.email);
@@ -77,7 +77,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
     }
   }, [show, user]);
 
-  // Si le rôle est MANAGER_COMPANY, récupérer l'entreprise associée
+  
   useEffect(() => {
     if (show && role === "MANAGER_COMPANY") {
       const token = localStorage.getItem("jwtToken");
@@ -136,10 +136,10 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
             return;
           }
           const data = await resp.json();
-          // On suppose que l'endpoint renvoie un objet avec la propriété "driver"
+          
           if (data.driver) {
             setExperience(data.driver.experience || "");
-            // Pour le champ date, on peut extraire la partie date si nécessaire
+            
             setLicenseExpiration(
               data.driver.licenseExpiration
                 ? data.driver.licenseExpiration.substring(0, 10)
@@ -175,7 +175,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       return;
     }
 
-    // Validation spécifique pour CLIENT
+   
     if (role === "CLIENT") {
       if (!address) {
         setErrors({ address: "L'adresse est requise pour un CLIENT" });
@@ -183,7 +183,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({
       }
     }
 
-    // Validation spécifique pour DRIVER
+   
     if (role === "DRIVER") {
       if (!experience) {
         setErrors({ experience: "L'expérience est requise pour un DRIVER" });

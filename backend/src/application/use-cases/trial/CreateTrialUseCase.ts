@@ -28,7 +28,7 @@ export class CreateTrialUseCase {
       throw new MotorcycleNotFoundException();
     }
 
-    // Vérifier si un essai actif existe déjà pour ce client et cette moto
+    
     const existingTrial = await this.trialRepo.findActiveTrial(dto.clientId, dto.motorcycleId);
     if (existingTrial) {
       throw new ActiveTrialAlreadyExistsException();

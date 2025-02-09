@@ -1,4 +1,3 @@
-// src/App.tsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -11,6 +10,8 @@ import DashboardCompany from "./components/dashboard/DashboardCompany";
 import DashboardConcession from "./components/dashboard/DashboardConcession";
 import DashboardClient from "./components/dashboard/DashboardClient";
 import DashboardDriver from "./components/dashboard/DashboardDriver";
+import DashboardMotorcycle from "./components/dashboard/DashboardMotorcycle";
+import DashboardCompanyMotorcycles from "./components/dashboard/DashboardCompanyMotorcycles";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -40,10 +41,14 @@ const App = () => {
             </ProtectedRoute>
           }
         >
-          {/* Route par défaut /dashboard */}
           <Route index element={<DashboardHome />} />
           <Route path="company" element={<DashboardCompany />} />
           <Route path="concession" element={<DashboardConcession />} />
+          <Route path="moto" element={<DashboardMotorcycle />} />
+          <Route
+            path="companyMotorcycle"
+            element={<DashboardCompanyMotorcycles />}
+          />
           <Route path="client" element={<DashboardClient />} />
           <Route path="driver" element={<DashboardDriver />} />
         </Route>

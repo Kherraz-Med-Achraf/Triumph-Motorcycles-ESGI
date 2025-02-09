@@ -17,7 +17,7 @@ export class CreateConcessionUseCase {
   ) {}
 
   async execute(input: CreateConcessionDTO): Promise<ConcessionEntity> {
-    // Validation du DTO
+    
     const dto = CreateConcessionSchema.parse(input);
 
     const existingConcession = await this.concessionRepo.findByName(dto.name);

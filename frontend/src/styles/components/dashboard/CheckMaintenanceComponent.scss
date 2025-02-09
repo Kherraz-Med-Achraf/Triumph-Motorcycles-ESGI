@@ -1,0 +1,74 @@
+.check-maintenance-component {
+    padding: 1rem;
+    background-color:  #ffffff; 
+    color: #1f1f1f; 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border : 1px solid #e0e0e0;
+    max-width: 500px;
+    margin: 1rem auto;
+    font-family: Arial, sans-serif;
+  
+    h3 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #1f1f1f;
+    }
+  
+    .modal__group {
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+  
+      label {
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+        color: #5c5c5c;
+      }
+  
+      input,
+      select {
+        padding: 0.5rem;
+        border: 1px solid #444;
+        border-radius: 4px;
+        background-color: #ffffff;
+        color: #030303;
+        font-size: 1rem;
+        outline: none;
+  
+        &:focus {
+          border-color: #777;
+        }
+      }
+  
+      p {
+        margin: 0.5rem 0;
+        color: #1b1b1b;
+      }
+  
+      button {
+        margin-top: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 4px;
+        background-color: #4caf50;
+        color: #000000;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+  
+        &:hover {
+          background-color: #45a045;
+        }
+  
+        &:disabled {
+          background-color: #777;
+          cursor: not-allowed;
+        }
+      }
+    }
+    .modal__group button {
+      margin-top: 0.5rem;
+    }
+  }
+  

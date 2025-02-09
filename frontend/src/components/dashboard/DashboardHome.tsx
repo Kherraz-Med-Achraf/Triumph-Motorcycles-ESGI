@@ -18,7 +18,7 @@ export type UserRole =
   | "DRIVER";
 export type UserExperience = "NOVICE" | "INTERMEDIATE" | "EXPERT";
 
-// On ajoute une propriété id pour identifier chaque utilisateur
+
 export interface UserBody {
   id: string;
   email: string;
@@ -112,7 +112,7 @@ const DashboardHome: React.FC = () => {
   };
 
   const handleDelete = async (id: string) => {
-    // Exemple de confirmation avec toast (vous pouvez adapter selon vos besoins)
+  
     toast.warn(
       <div className="toast-confirm">
         <p>Voulez-vous vraiment supprimer cet utilisateur ?</p>
@@ -161,7 +161,7 @@ const DashboardHome: React.FC = () => {
     fetchUsers();
   }, []);
 
-  // Délégation d’événements pour capter les clics sur les boutons générés par Grid.js
+ 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -210,10 +210,10 @@ const DashboardHome: React.FC = () => {
         >
           Créer une nouvelle entreprise
         </button>
-        <button onClick={() => setShowModal(true)} className="create-btn">
+        <button onClick={() => navigate("/dashboard/concession")} className="create-btn">
           Créer une nouvelle concession
         </button>
-        <button onClick={() => setShowModal(true)} className="create-btn">
+        <button onClick={() => navigate("/dashboard/moto")} className="create-btn">
           Créer une nouvelle moto
         </button>
       </div>

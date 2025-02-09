@@ -16,7 +16,7 @@ export class UpdateCompanyUseCase {
   async execute(companyId: string, input: UpdateCompanyDTO): Promise<CompanyEntity> {
     const dto = UpdateCompanySchema.parse(input);
 
-    // Vérification que l'entreprise existe
+    
     const existingCompany = await this.companyRepo.findById(companyId);
     if (!existingCompany) {
       throw new CompanyNotFoundException();

@@ -17,16 +17,16 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(input: CreateUserDTO): Promise<UserEntity> {
-    // Validation avec Zod
+   
     const dto = CreateUserSchema.parse(input);
 
-    // Vérification si l'email existe déjà
+    
     const existing = await this.userRepo.findByEmail(dto.email);
     if (existing) {
       throw new EmailAlreadyExistsException();
     }
 
-    // Pour un DRIVER, vérifier que l'entreprise existe AVANT de créer l'utilisateur
+    
     if (dto.role === "DRIVER") {
       if (dto.companyId) {
         const company = await this.companyRepo.findById(dto.companyId);
@@ -36,12 +36,12 @@ export class CreateUserUseCase {
       }
     }
 
-    // Hash du mot de passe
+    
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const userId = uuidv4();
 
-    // Création de l'utilisateur
+   
     const user = new UserEntity(
       userId,
       dto.email,
@@ -54,11 +54,11 @@ export class CreateUserUseCase {
 
     const createdUser = await this.userRepo.create(user);
 
-    // Si l'utilisateur est un DRIVER, créer aussi un DriverEntity
+    
     if (dto.role === "DRIVER") {
       const driver = new DriverEntity(
-        uuidv4(), // ID du driver
-        userId, // Associer le userId au driver
+        uuidv4(), 
+        userId, 
         dto.experience,
         dto.licenseExpiration ? new Date(dto.licenseExpiration) : undefined,
         dto.licenseCountry,

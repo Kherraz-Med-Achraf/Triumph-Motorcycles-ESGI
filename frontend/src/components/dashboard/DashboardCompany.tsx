@@ -114,7 +114,7 @@ const DashboardCompany: React.FC = () => {
     fetchCompanies();
   }, []);
 
- 
+  
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -174,7 +174,7 @@ const DashboardCompany: React.FC = () => {
           onClose={() => setSelectedCompany(null)}
           company={selectedCompany}
           onCompanyUpdated={fetchCompanies}
-          mode={modalMode} // Passage du mode à la modale
+          mode={modalMode} 
         />
       )}
 

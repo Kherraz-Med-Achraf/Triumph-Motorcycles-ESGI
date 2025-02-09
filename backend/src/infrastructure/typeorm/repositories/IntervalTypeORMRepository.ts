@@ -12,8 +12,10 @@ export class IntervalTypeORMRepository implements IntervalRepository {
     entity.type = interval.type;
     entity.value = interval.value;
     entity.motorcycleId = interval.motorcycleId;
+    entity.lastMileage = interval.lastMileage;
+    entity.lastMaintenanceDate = interval.lastMaintenanceDate;
     entity.createdAt = interval.createdAt;
-
+    
     await this.ormRepo.save(entity);
     return interval;
   }
@@ -24,9 +26,11 @@ export class IntervalTypeORMRepository implements IntervalRepository {
 
     return new IntervalEntity(
       entity.id,
-      entity.type as any, // "KM" ou "TIME"
+      entity.type as "KM" | "TIME",
       entity.value,
       entity.motorcycleId,
+      entity.lastMileage, 
+      entity.lastMaintenanceDate,
       entity.createdAt
     );
   }
@@ -35,9 +39,11 @@ export class IntervalTypeORMRepository implements IntervalRepository {
     const entities = await this.ormRepo.find();
     return entities.map(ent => new IntervalEntity(
       ent.id,
-      ent.type as any,
+      ent.type as "KM" | "TIME",
       ent.value,
       ent.motorcycleId,
+      ent.lastMileage,
+      ent.lastMaintenanceDate,
       ent.createdAt
     ));
   }
@@ -46,19 +52,26 @@ export class IntervalTypeORMRepository implements IntervalRepository {
     const entities = await this.ormRepo.findBy({ motorcycleId });
     return entities.map(ent => new IntervalEntity(
       ent.id,
-      ent.type as any,
+      ent.type as "KM" | "TIME",
       ent.value,
       ent.motorcycleId,
+      ent.lastMileage, 
+      ent.lastMaintenanceDate,
       ent.createdAt
     ));
   }
 
   async update(interval: IntervalEntity): Promise<IntervalEntity> {
-    const entity = new IntervalTypeORMEntity();
-    entity.id = interval.id;
+    const entity = await this.ormRepo.findOneBy({ id: interval.id });
+    if (!entity) {
+      throw new Error(`Interval with id ${interval.id} not found`);
+    }
+
     entity.type = interval.type;
     entity.value = interval.value;
     entity.motorcycleId = interval.motorcycleId;
+    entity.lastMileage = interval.lastMileage; 
+    entity.lastMaintenanceDate = interval.lastMaintenanceDate;
     entity.createdAt = interval.createdAt;
 
     await this.ormRepo.save(entity);

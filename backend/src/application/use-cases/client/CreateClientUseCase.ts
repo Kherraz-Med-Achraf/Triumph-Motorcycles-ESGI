@@ -17,18 +17,18 @@ export class CreateClientUseCase {
 
     const dto = CreateClientSchema.parse(input);
 
-    // Vérifier si l'utilisateur existe
+    
     const user = await this.userRepo.findById(dto.userId);
     if (!user) {
       throw new UserNotFoundException();
     }
 
-    // Vérifier si l'utilisateur a bien le rôle CLIENT
+    
     if (user.role !== "CLIENT") {
       throw new InvalidUserRoleException();
     }
 
-    // Vérifier si un client existe déjà avec ce userId (éviter doublon)
+    
     const existingClient = await this.clientRepo.findByUserId(dto.userId);
     if (existingClient) {
       throw new ClientAlreadyExistsException();

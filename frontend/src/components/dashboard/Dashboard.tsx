@@ -39,6 +39,16 @@ const Dashboard: React.FC = () => {
               Concession
             </NavLink>
           </li>
+           <li>
+            <NavLink
+              to="/dashboard/moto"
+              className={({ isActive }) =>
+                isActive ? "dashboard__link active" : "dashboard__link"
+              }
+            >
+              Moto
+            </NavLink>
+          </li>
           <li>
             <NavLink
               to="/dashboard/client"
@@ -57,6 +67,16 @@ const Dashboard: React.FC = () => {
               }
             >
               Driver
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/companyMotorcycle"
+              className={({ isActive }) =>
+                isActive ? "dashboard__link active" : "dashboard__link"
+              }
+            >
+              Flotte company
             </NavLink>
           </li>
         </ul>

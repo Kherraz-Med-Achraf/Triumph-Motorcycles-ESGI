@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Vous pouvez réutiliser l'énumération existante si elle est exportée
+
 export const UserExperienceEnum = z.enum(["NOVICE", "INTERMEDIATE", "EXPERT"]);
 
 export const UpdateUserSchema = z.object({
@@ -30,9 +30,10 @@ export const UpdateUserSchema = z.object({
     })
     .optional(),
   licenseNumber: z.string().optional(),
+  companyId: z.string().uuid().optional(),
   companyMotorcycleId: z.string().uuid().optional(),
 
-  // Champs CLIENT
+ 
   address: z.string().optional(),
 });
 

@@ -5,11 +5,18 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../../store/slices/authSlice";
 
-interface Concession {
+interface User {
+  id: string;
+  nom: string;
+  prenom: string;
+  role: string;
+}
+
+export interface Concession {
   id: string;
   name: string;
   address: string;
-  // Vous pouvez ajouter d'autres champs si nécessaire (ex: createdAt)
+  managerUserId?: string; // Utilisation de managerUserId pour refléter la colonne en base
 }
 
 interface EditConcessionModalProps {
@@ -29,31 +36,59 @@ const EditConcessionModal: React.FC<EditConcessionModalProps> = ({
 }) => {
   const [name, setName] = useState(concession.name);
   const [address, setAddress] = useState(concession.address);
+  const [selectedUserId, setSelectedUserId] = useState(concession.managerUserId || "");
+  const [users, setUsers] = useState<User[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Lors de l'ouverture de la modal, on réinitialise les valeurs et on charge la liste des managers
   useEffect(() => {
     if (show) {
-      // Réinitialisation des champs lors de l'ouverture de la modal
       setName(concession.name);
       setAddress(concession.address);
+      setSelectedUserId(concession.managerUserId || "");
       setErrors({});
+
+      const token = localStorage.getItem("jwtToken");
+      if (!token) {
+        toast.error("Aucun token trouvé, accès refusé.");
+        dispatch(logout());
+        navigate("/");
+        return;
+      }
+
+      fetch(`${getApiUrl()}/users/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((resp) => resp.json())
+        .then((data) => {
+          
+          const filteredUsers = data.filter(
+            (user: User) => user.role === "MANAGER_CONCESSION"
+          );
+          setUsers(filteredUsers);
+        })
+        .catch((error) => {
+          console.error("Erreur lors du chargement des utilisateurs :", error);
+          toast.error("Erreur lors du chargement des utilisateurs.");
+        });
     }
-  }, [show, concession]);
+  }, [show, concession, dispatch, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // En mode "view", on se contente de fermer la modale
+    
     if (mode === "view") {
+      onClose();
       return;
     }
 
     setErrors({});
-
-    // Vérifications simples
     if (!name || name.length < 2) {
       setErrors({ name: "Le nom doit contenir au moins 2 caractères" });
       return;
@@ -72,7 +107,8 @@ const EditConcessionModal: React.FC<EditConcessionModalProps> = ({
         return;
       }
 
-      const body = { name, address };
+      // On envoie le manager via managerUserId
+      const body = { name, address, managerUserId: selectedUserId || null };
 
       const resp = await fetch(`${getApiUrl()}/concessions/${concession.id}`, {
         method: "PUT",
@@ -99,6 +135,9 @@ const EditConcessionModal: React.FC<EditConcessionModalProps> = ({
 
   if (!show) return null;
 
+  // Recherche du manager associé dans la liste chargée
+  const associatedUser = users.find((user) => user.id === selectedUserId);
+
   return (
     <div className="modal">
       <div className="modal__overlay" onClick={onClose}></div>
@@ -115,8 +154,8 @@ const EditConcessionModal: React.FC<EditConcessionModalProps> = ({
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
               disabled={mode === "view"}
+              required
             />
             {errors.name && <p className="error-message">{errors.name}</p>}
           </div>
@@ -126,10 +165,32 @@ const EditConcessionModal: React.FC<EditConcessionModalProps> = ({
               type="text"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              required
               disabled={mode === "view"}
+              required
             />
             {errors.address && <p className="error-message">{errors.address}</p>}
+          </div>
+          <div className="modal__group">
+            <label>Manager associé :</label>
+            {mode === "edit" ? (
+              <select
+                value={selectedUserId}
+                onChange={(e) => setSelectedUserId(e.target.value)}
+              >
+                <option value="">-- Sélectionnez un manager --</option>
+                {users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.prenom} {user.nom}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <div className="associated-user">
+                {associatedUser
+                  ? `${associatedUser.prenom} ${associatedUser.nom}`
+                  : "Aucun manager attribué"}
+              </div>
+            )}
           </div>
           <div className="modal__actions">
             {mode === "edit" ? (

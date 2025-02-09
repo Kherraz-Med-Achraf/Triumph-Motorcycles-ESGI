@@ -20,18 +20,20 @@ export class UpdateUserUseCase {
    * @param userId Identifiant de l'utilisateur à mettre à jour.
    * @param updateData Données à mettre à jour.
    */
-
   async execute(
     userId: string,
     updateData: UpdateUserDTO
   ): Promise<UserEntity> {
+  
     const dto: UpdateUserDTO = UpdateUserSchema.parse(updateData);
 
+    
     const user = await this.userRepo.findById(userId);
     if (!user) {
       throw new UserNotFoundException();
     }
 
+    
     if (dto.email) {
       const existingUser = await this.userRepo.findByEmail(dto.email);
       if (existingUser && existingUser.id !== userId) {
@@ -52,6 +54,7 @@ export class UpdateUserUseCase {
 
     const updatedUser = await this.userRepo.update(user);
 
+   
     if (updatedUser.role === "DRIVER") {
       const driver = await this.driverRepo.findByUserId(userId);
       if (!driver) {
@@ -68,6 +71,13 @@ export class UpdateUserUseCase {
       }
       if (dto.licenseNumber) {
         driver.licenseNumber = dto.licenseNumber;
+      }
+      // Mise à jour des champs d'association
+      if (dto.companyId !== undefined) {
+        driver.companyId = dto.companyId;
+      }
+      if (dto.companyMotorcycleId !== undefined) {
+        driver.companyMotorcycleId = dto.companyMotorcycleId;
       }
       await this.driverRepo.update(driver);
     }
